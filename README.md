@@ -1,1 +1,0 @@
-# earnnest-bot
