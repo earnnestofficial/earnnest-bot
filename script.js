@@ -15,12 +15,16 @@ document.getElementById("userid").innerHTML =
 let balance = Number(localStorage.getItem("balance")) || 0;
 updateBalance();
 
-document.getElementById("loading").style.display = "none";
+// Hide loading
+window.onload = function () {
+    document.getElementById("loading").style.display = "none";
+};
 
 function updateBalance() {
     document.getElementById("balance").innerHTML = balance + " Coins";
 }
 
+// Login API
 fetch(API_URL, {
     method: "POST",
     headers: {
@@ -32,41 +36,72 @@ fetch(API_URL, {
         "&name=" + encodeURIComponent(user.first_name || "")
 })
 .then(r => r.text())
-.then(console.log)
-.catch(console.error);
+.then(console.log);
 
+// Daily Bonus
 document.getElementById("dailyBtn").onclick = function () {
 
     let today = new Date().toDateString();
     let last = localStorage.getItem("daily");
 
     if (today === last) {
-        alert("Already Claimed Today");
+        showToast("Already Claimed Today");
         return;
     }
 
     balance += 50;
     localStorage.setItem("balance", balance);
     localStorage.setItem("daily", today);
+
     updateBalance();
-
-    alert("+50 Coins Added");
+    showToast("+50 Coins Added");
 };
 
+// Watch Ads
 document.getElementById("adsBtn").onclick = function () {
-    alert("Watch Ads feature coming soon!");
+    showToast("Ads Coming Soon");
 };
 
+// Referral
 document.getElementById("refBtn").onclick = function () {
-    alert("Referral feature coming soon!");
+    showToast("Referral System Coming Soon");
 };
 
+// Withdraw
 document.getElementById("withdrawBtn").onclick = function () {
 
     if (balance < 1000) {
-        alert("Minimum 1000 Coins Required");
+        showToast("Minimum 1000 Coins Required");
         return;
     }
 
-    alert("Withdraw Request Submitted");
+    showToast("Withdraw Request Submitted");
 };
+
+// Bottom Navigation
+document.getElementById("homeBtn").onclick = function () {
+    showToast("Home");
+};
+
+document.getElementById("earnBtn").onclick = function () {
+    showToast("Earn");
+};
+
+document.getElementById("referralBtn").onclick = function () {
+    showToast("Referral");
+};
+
+document.getElementById("profileBtn").onclick = function () {
+    showToast("Profile");
+};
+
+// Toast Function
+function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.innerHTML = message;
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2500);
+}
