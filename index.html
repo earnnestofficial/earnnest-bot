@@ -5,75 +5,91 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Earnnest Bot</title>
 
+<link rel="stylesheet" href="style.css">
+
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-<style>
-body{
-  margin:0;
-  padding:0;
-  font-family:Arial,sans-serif;
-  background:#1f2937;
-  color:#fff;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-}
-.container{
-  text-align:center;
-}
-button{
-  background:#22c55e;
-  color:#fff;
-  border:none;
-  padding:15px 35px;
-  border-radius:10px;
-  font-size:18px;
-  cursor:pointer;
-}
-button:hover{
-  background:#16a34a;
-}
-</style>
-
 </head>
+
 <body>
 
-<div class="container">
-  <h1>Welcome to Earnnest Bot</h1>
-  <p>Telegram Mini App Ready!</p>
-  <button onclick="startApp()">Start</button>
+<!-- Loading -->
+<div id="loading" class="loading">
+    Loading...
 </div>
 
-<script>
-Telegram.WebApp.ready();
+<!-- Header -->
+<div class="header">
+    <h1>💰 Earnnest Bot</h1>
+    <p id="username">Welcome</p>
+    <small id="userid"></small>
+</div>
 
-const API_URL = "https://script.google.com/macros/s/AKfycbyiMpkqFKQ6uaE_NTN4IrGt9wE5h2upESzEs4sr_wkMORp4VBkN_L1EUNSYSnuL6UF5fw/exec";
+<!-- Balance -->
+<div class="card">
+    <h2>Balance</h2>
+    <div class="balance" id="balance">0 Coins</div>
+</div>
 
-function startApp() {
+<!-- Main Buttons -->
+<div class="grid">
 
-  const user = Telegram.WebApp.initDataUnsafe.user || {};
+<button class="btn" id="dailyBtn">
+🎁 Daily Bonus
+</button>
 
-  fetch(API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    body:
-      "userId=" + encodeURIComponent(user.id || "") +
-      "&name=" + encodeURIComponent(user.first_name || "Unknown") +
-      "&balance=0"
-  })
-  .then(response => response.text())
-  .then(data => {
-    alert("Saved: " + data);
-  })
-  .catch(error => {
-    alert("Error: " + error);
-  });
+<button class="btn" id="adsBtn">
+▶ Watch Ads
+</button>
 
-}
-</script>
+<button class="btn" id="refBtn">
+👥 Referral
+</button>
+
+<button class="btn" id="withdrawBtn">
+💸 Withdraw
+</button>
+
+</div>
+
+<!-- Tasks -->
+<div class="tasks">
+
+<h2>Tasks</h2>
+
+<div class="task">
+<span>Join Telegram</span>
+<span>+100</span>
+</div>
+
+<div class="task">
+<span>Join Channel</span>
+<span>+100</span>
+</div>
+
+<div class="task">
+<span>Follow Facebook</span>
+<span>+100</span>
+</div>
+
+</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom">
+
+<button id="homeBtn">🏠 Home</button>
+
+<button id="earnBtn">💰 Earn</button>
+
+<button id="referralBtn">👥 Referral</button>
+
+<button id="profileBtn">👤 Profile</button>
+
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast"></div>
+
+<script src="script.js"></script>
 
 </body>
 </html>
