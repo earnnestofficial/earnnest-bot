@@ -6,6 +6,12 @@ const user = tg.initDataUnsafe.user || {};
 
 const API_URL = "https://script.google.com/macros/s/AKfycbyiMpkqFKQ6uaE_NTN4IrGt9wE5h2upESzEs4sr_wkMORp4VBkN_L1EUNSYSnuL6UF5fw/exec";
 
+// ===== DEBUG =====
+alert("Platform: " + tg.platform);
+alert("initData: " + tg.initData);
+alert("User: " + JSON.stringify(user));
+// =================
+
 document.getElementById("username").innerHTML =
 "👋 Welcome, " + (user.first_name || "User");
 
@@ -36,7 +42,8 @@ fetch(API_URL, {
         "&name=" + encodeURIComponent(user.first_name || "")
 })
 .then(r => r.text())
-.then(console.log);
+.then(console.log)
+.catch(console.error);
 
 // Daily Bonus
 document.getElementById("dailyBtn").onclick = function () {
