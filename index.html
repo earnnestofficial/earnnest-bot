@@ -45,11 +45,33 @@ button:hover{
   <button onclick="startApp()">Start</button>
 </div>
 
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
 <script>
 Telegram.WebApp.ready();
 
-function startApp(){
-  alert("Mini App is working!");
+const API_URL = "https://script.google.com/macros/s/AKfycbyiMpkqFKQ6uaE_NTN4IrGt9wE5h2upESzEs4sr_wkMORp4VBkN_L1EUNSYSnuL6UF5fw/exec";
+
+function startApp() {
+  const user = Telegram.WebApp.initDataUnsafe.user;
+
+  fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body:
+      "userId=" + encodeURIComponent(user?.id || "") +
+      "&name=" + encodeURIComponent(user?.first_name || "Unknown") +
+      "&balance=0"
+  })
+  .then(r => r.text())
+  .then(msg => {
+    alert("Saved: " + msg);
+  })
+  .catch(err => {
+    alert("Error: " + err);
+  });
 }
 </script>
 
