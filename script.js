@@ -7,7 +7,8 @@ const user = tg.initDataUnsafe.user || {};
 const API_URL = "https://script.google.com/macros/s/AKfycbyiMpkqFKQ6uaE_NTN4IrGt9wE5h2upESzEs4sr_wkMORp4VBkN_L1EUNSYSnuL6UF5fw/exec";
 
 document.getElementById("username").innerHTML =
-" Welcome, " + (user.first_name || "User");
+"👋 Welcome, " + (user.first_name || "User");
+
 document.getElementById("userid").innerHTML =
 "User ID: " + (user.id || "");
 
@@ -38,8 +39,7 @@ fetch(API_URL, {
 .then(res => res.text())
 .then(() => {
 
-    // Load Balance
-    fetch(API_URL, {
+    return fetch(API_URL, {
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
@@ -47,18 +47,18 @@ fetch(API_URL, {
         body:
             "action=getBalance" +
             "&userId=" + encodeURIComponent(user.id || "")
-    })
-    .then(res => res.text())
-    .then(data => {
-
-        let coins = Number(data);
-
-        if (!isNaN(coins)) {
-            balance = coins;
-            updateBalance();
-        }
-
     });
+
+})
+.then(res => res.text())
+.then(data => {
+
+    let coins = Number(data);
+
+    if (!isNaN(coins)) {
+        balance = coins;
+        updateBalance();
+    }
 
 });
 
@@ -93,9 +93,55 @@ document.getElementById("dailyBtn").onclick = function () {
 
 };
 
-// Watch Ads
+// ======================
+// WATCH ADS (MONETAG)
+// ======================
+
 document.getElementById("adsBtn").onclick = function () {
-    showToast("Ads Coming Soon");
+
+    if (typeof show_11437158 !== "function") {
+        showToast("Ad SDK Not Loaded");
+        return;
+    }
+
+    showToast("Loading Ad...");
+
+    show_11437158()
+    .then(() => {
+
+        fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body:
+                "action=reward" +
+                "&userId=" + encodeURIComponent(user.id || "")
+        })
+        .then(res => res.text())
+        .then(data => {
+
+            let coins = Number(data);
+
+            if (!isNaN(coins)) {
+                balance = coins;
+            } else {
+                balance += 20;
+            }
+
+            updateBalance();
+
+            showToast("+20 Coins Added");
+
+        });
+
+    })
+    .catch(() => {
+
+        showToast("Ad Cancelled");
+
+    });
+
 };
 
 // Referral
