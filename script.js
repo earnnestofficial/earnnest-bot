@@ -84,17 +84,21 @@ document.getElementById("dailyBtn").onclick = function(){
     .then(res=>res.text())
     .then(data=>{
 
-        if(data==="claimed"){
+        data = data.trim();
+
+        if(data === "ALREADY_CLAIMED"){
             showToast("Already Claimed Today");
             return;
         }
 
-        const coins=Number(data);
+        const coins = Number(data);
 
         if(!isNaN(coins)){
-            balance=coins;
+            balance = coins;
             updateBalance();
             showToast("+50 Coins Added");
+        }else{
+            showToast("Daily Bonus Failed");
         }
 
     });
