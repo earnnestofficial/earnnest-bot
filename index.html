@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Earnnest Bot</title>
 
 <link rel="stylesheet" href="style.css">
@@ -10,33 +13,57 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <!-- Monetag SDK -->
-<script src='//libtl.com/sdk.js'
-data-zone='11437158'
-data-sdk='show_11437158'></script>
+<script
+src="//libtl.com/sdk.js"
+data-zone="11437158"
+data-sdk="show_11437158">
+</script>
 
 </head>
 
 <body>
 
 <!-- Loading -->
+
 <div id="loading" class="loading">
-    Loading...
+Loading...
 </div>
 
 <!-- Header -->
+
 <div class="header">
-    <h1>💰 Earnnest Bot</h1>
-    <p id="username">Welcome</p>
-    <small id="userid"></small>
+
+<h1>💰 Earnnest Bot</h1>
+
+<p id="username">
+Welcome
+</p>
+
+<small id="userid">
+</small>
+
 </div>
 
 <!-- Balance -->
+
 <div class="card">
-    <h2>Balance</h2>
-    <div class="balance" id="balance">0 Coins</div>
+
+<h2>
+Balance
+</h2>
+
+<div
+class="balance"
+id="balance">
+
+0 Coins
+
+</div>
+
 </div>
 
 <!-- Main Buttons -->
+
 <div class="grid">
 
 <button class="btn" id="dailyBtn">
@@ -57,7 +84,49 @@ data-sdk='show_11437158'></script>
 
 </div>
 
+<!-- Withdraw Popup -->
+
+<div id="withdrawModal" class="modal">
+
+<div class="modal-content">
+
+<h2>Withdraw Request</h2>
+
+<select id="withdrawMethod">
+<option value="">Select Method</option>
+<option value="Bkash">Bkash</option>
+<option value="Nagad">Nagad</option>
+<option value="Binance">Binance</option>
+</select>
+
+<input
+type="text"
+id="withdrawAccount"
+placeholder="Account Number">
+
+<input
+type="number"
+id="withdrawCoins"
+placeholder="Enter Coins">
+
+<div class="modal-buttons">
+
+<button id="submitWithdraw">
+Submit
+</button>
+
+<button id="closeWithdraw">
+Cancel
+</button>
+
+</div>
+
+</div>
+
+</div>
+
 <!-- Tasks -->
+
 <div class="tasks">
 
 <h2>Tasks</h2>
@@ -80,19 +149,29 @@ data-sdk='show_11437158'></script>
 </div>
 
 <!-- Bottom Navigation -->
+
 <div class="bottom">
 
-<button id="homeBtn">🏠 Home</button>
+<button id="homeBtn">
+🏠 Home
+</button>
 
-<button id="earnBtn">💰 Earn</button>
+<button id="earnBtn">
+💰 Earn
+</button>
 
-<button id="referralBtn">👥 Referral</button>
+<button id="referralBtn">
+👥 Referral
+</button>
 
-<button id="profileBtn">👤 Profile</button>
+<button id="profileBtn">
+👤 Profile
+</button>
 
 </div>
 
-<!-- Toast Notification -->
+<!-- Toast -->
+
 <div id="toast" class="toast"></div>
 
 <script src="script.js"></script>
