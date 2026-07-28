@@ -11,7 +11,9 @@ body{
     padding-bottom:90px;
 }
 
-/* Loading */
+/* ===========================
+   Loading
+=========================== */
 
 .loading{
     position:fixed;
@@ -29,7 +31,9 @@ body{
     z-index:9999;
 }
 
-/* Header */
+/* ===========================
+   Header
+=========================== */
 
 .header{
     background:#1f2937;
@@ -52,7 +56,9 @@ body{
     color:#9ca3af;
 }
 
-/* Balance Card */
+/* ===========================
+   Balance Card
+=========================== */
 
 .card{
     width:90%;
@@ -61,16 +67,19 @@ body{
     border-radius:15px;
     padding:20px;
     text-align:center;
+    box-shadow:0 4px 12px rgba(0,0,0,.25);
 }
 
 .balance{
-    font-size:35px;
-    color:#22c55e;
     margin-top:10px;
+    font-size:36px;
     font-weight:bold;
+    color:#22c55e;
 }
 
-/* Buttons */
+/* ===========================
+   Main Buttons
+=========================== */
 
 .grid{
     width:90%;
@@ -84,8 +93,8 @@ body{
     background:#22c55e;
     color:#fff;
     border:none;
-    padding:18px;
     border-radius:12px;
+    padding:18px;
     font-size:17px;
     cursor:pointer;
     transition:.3s;
@@ -99,7 +108,9 @@ body{
     transform:scale(.96);
 }
 
-/* Tasks */
+/* ===========================
+   Tasks
+=========================== */
 
 .tasks{
     width:90%;
@@ -107,16 +118,19 @@ body{
     background:#1f2937;
     border-radius:15px;
     padding:20px;
+    box-shadow:0 4px 12px rgba(0,0,0,.25);
 }
 
 .tasks h2{
     margin-bottom:15px;
+    color:#22c55e;
 }
 
 .task{
     display:flex;
     justify-content:space-between;
-    padding:12px 0;
+    align-items:center;
+    padding:14px 0;
     border-bottom:1px solid #374151;
 }
 
@@ -124,29 +138,39 @@ body{
     border-bottom:none;
 }
 
-/* Bottom Navigation */
+/* ===========================
+   Bottom Navigation
+=========================== */
 
 .bottom{
     position:fixed;
-    bottom:0;
     left:0;
+    bottom:0;
     width:100%;
     background:#1f2937;
     display:flex;
     justify-content:space-around;
+    align-items:center;
     padding:15px 0;
     border-top:1px solid #374151;
+    z-index:1000;
 }
 
 .bottom button{
     background:none;
     border:none;
-    color:white;
+    color:#fff;
     font-size:16px;
     cursor:pointer;
 }
 
-/* Toast */
+.bottom button:active{
+    color:#22c55e;
+}
+
+/* ===========================
+   Toast
+=========================== */
 
 .toast{
     position:fixed;
@@ -157,30 +181,143 @@ body{
     color:#fff;
     padding:12px 22px;
     border-radius:8px;
+    font-weight:bold;
     display:none;
     z-index:99999;
-    font-weight:bold;
 }
 
-/* Mobile */
+/* ===========================
+   Withdraw Modal
+=========================== */
+
+.modal{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.75);
+    justify-content:center;
+    align-items:center;
+    z-index:999999;
+}
+
+.modal-content{
+    width:90%;
+    max-width:360px;
+    background:#1f2937;
+    border:2px solid #22c55e;
+    border-radius:15px;
+    padding:20px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.45);
+}
+
+.modal-content h2{
+    color:#22c55e;
+    margin-bottom:18px;
+}
+
+.modal-content select,
+.modal-content input{
+    width:100%;
+    padding:14px;
+    margin-bottom:15px;
+    border:none;
+    outline:none;
+    border-radius:10px;
+    background:#374151;
+    color:#fff;
+    font-size:16px;
+}
+
+.modal-content input::placeholder{
+    color:#d1d5db;
+}
+
+.modal-buttons{
+    display:flex;
+    gap:10px;
+}
+
+.modal-buttons button{
+    flex:1;
+    border:none;
+    border-radius:10px;
+    padding:14px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.25s;
+}
+
+#submitWithdraw{
+    background:#22c55e;
+    color:#fff;
+}
+
+#submitWithdraw:hover{
+    background:#16a34a;
+}
+
+#closeWithdraw{
+    background:#ef4444;
+    color:#fff;
+}
+
+#closeWithdraw:hover{
+    background:#dc2626;
+}
+
+/* ===========================
+   Toast Animation
+=========================== */
+
+.toast.show{
+    display:block;
+    animation:fadeIn .25s ease;
+}
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+        transform:translate(-50%,20px);
+    }
+
+    to{
+        opacity:1;
+        transform:translate(-50%,0);
+    }
+
+}
+
+/* ===========================
+   Mobile Responsive
+=========================== */
 
 @media(max-width:600px){
 
-.header h1{
-    font-size:24px;
-}
+    .header h1{
+        font-size:24px;
+    }
 
-.balance{
-    font-size:30px;
-}
+    .balance{
+        font-size:30px;
+    }
 
-.btn{
-    font-size:15px;
-    padding:15px;
-}
+    .btn{
+        font-size:15px;
+        padding:15px;
+    }
 
-.bottom button{
-    font-size:14px;
-}
+    .bottom button{
+        font-size:14px;
+    }
+
+    .modal-content{
+        width:92%;
+    }
 
 }
