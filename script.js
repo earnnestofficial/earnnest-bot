@@ -260,7 +260,7 @@ fetch(API_URL,{
     "&method="+encodeURIComponent(method)+
     "&amount="+encodeURIComponent(amount)+
     "&trxId="+encodeURIComponent(trxId)+
-    "&number="+encodeURIComponent(number)
+  "&paymentNumber="+encodeURIComponent(number)
 })
 .then(res=>res.text())
 .then(msg=>{
