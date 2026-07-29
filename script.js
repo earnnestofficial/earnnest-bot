@@ -19,6 +19,12 @@ const withdrawMethod = document.getElementById("withdrawMethod");
 const withdrawAccount = document.getElementById("withdrawAccount");
 const withdrawCoins = document.getElementById("withdrawCoins");
 
+const depositModal = document.getElementById("depositModal");
+const depositMethod = document.getElementById("depositMethod");
+const depositAmount = document.getElementById("depositAmount");
+const depositTrxId = document.getElementById("depositTrxId");
+const depositNumber = document.getElementById("depositNumber");
+
 function updateBalance(){
     document.getElementById("balance").innerHTML =
     balance + " Coins";
@@ -26,6 +32,28 @@ function updateBalance(){
 
 window.onload = function(){
     document.getElementById("loading").style.display="none";
+};
+
+// =========================
+// DEPOSIT OPEN
+// =========================
+
+document.getElementById("depositBtn").onclick = function () {
+
+    depositMethod.value = "";
+    depositAmount.value = "";
+    depositTrxId.value = "";
+    depositNumber.value = "";
+
+    depositModal.style.display = "flex";
+};
+
+// =========================
+// DEPOSIT CLOSE
+// =========================
+
+document.getElementById("closeDeposit").onclick = function () {
+    depositModal.style.display = "none";
 };
 
 // Login
@@ -189,6 +217,63 @@ document.getElementById("closeWithdraw").onclick=function(){
     withdrawModal.style.display="none";
 
 };
+
+// =========================
+// SUBMIT DEPOSIT
+// =========================
+
+const method = depositMethod.value;
+const amount = Number(depositAmount.value);
+const trxId = depositTrxId.value.trim();
+const number = depositNumber.value.trim();
+
+if (method == "") {
+    showToast("Select Deposit Method");
+    return;
+}
+
+if (isNaN(amount) || amount < 100) {
+    showToast("Minimum Deposit 100");
+    return;
+}
+
+if (trxId == "") {
+    showToast("Enter Transaction ID");
+    return;
+}
+
+if (number == "") {
+    showToast("Enter Sender Number");
+    return;
+}
+
+fetch(API_URL,{
+    method:"POST",
+    headers:{
+        "Content-Type":"application/x-www-form-urlencoded"
+    },
+    body:
+    "action=deposit"+
+    "&userId="+encodeURIComponent(user.id||"")+
+    "&method="+encodeURIComponent(method)+
+    "&amount="+encodeURIComponent(amount)+
+    "&trxId="+encodeURIComponent(trxId)+
+    "&number="+encodeURIComponent(number)
+})
+.then(res=>res.text())
+.then(msg=>{
+    showToast(msg);
+
+    depositMethod.value="";
+    depositAmount.value="";
+    depositTrxId.value="";
+    depositNumber.value="";
+
+    depositModal.style.display="none";
+})
+.catch(()=>{
+    showToast("Server Error");
+});
 
 // ======================
 // SUBMIT WITHDRAW
