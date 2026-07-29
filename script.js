@@ -4,8 +4,7 @@ Telegram.WebApp.expand();
 const tg = Telegram.WebApp;
 const user = tg.initDataUnsafe.user || {};
 
-const API_URL = "https://script.google.com/macros/s/AKfycbyiMpkqFKQ6uaE_NTN4IrGt9wE5h2upESzEs4sr_wkMORp4VBkN_L1EUNSYSnuL6UF5fw/exec";
-
+const API_URL = "https://script.google.com/macros/s/AKfycby1PfOZ8dPri99Uwa2smMd-Nk66l29RC0w6jNH3HMeqQoKNs_G_WITUM71ar5mEmTePjg/exec"
 document.getElementById("username").innerHTML =
 "ðŸ‘‹ Welcome, " + (user.first_name || "User");
 
