@@ -1,3 +1,5 @@
+// Version 3.1
+
 Telegram.WebApp.ready();
 Telegram.WebApp.expand();
 
