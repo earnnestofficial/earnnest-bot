@@ -1,5 +1,3 @@
-// Version 3.1
-
 Telegram.WebApp.ready();
 Telegram.WebApp.expand();
 
@@ -391,3 +389,5 @@ function showToast(message) {
     }, 2500);
 
 }
+
+// Version 3.1
