@@ -78,12 +78,61 @@ id="balance">
 👥 Referral
 </button>
 
+<button class="btn" id="depositBtn">
+💵 Deposit
+</button>
+
 <button class="btn" id="withdrawBtn">
 💸 Withdraw
 </button>
 
 </div>
 
+<!-- Deposit Popup -->
+
+<div id="depositModal" class="modal">
+
+<div class="modal-content">
+
+<h2>Deposit Request</h2>
+
+<select id="depositMethod">
+<option value="">Select Method</option>
+<option value="Bkash">Bkash</option>
+<option value="Nagad">Nagad</option>
+<option value="Binance">Binance</option>
+</select>
+
+<input
+type="number"
+id="depositAmount"
+placeholder="Enter Amount">
+
+<input
+type="text"
+id="depositTrxId"
+placeholder="Transaction ID">
+
+<input
+type="text"
+id="depositNumber"
+placeholder="Payment Number">
+
+<div class="modal-buttons">
+
+<button id="submitDeposit">
+Submit
+</button>
+
+<button id="closeDeposit">
+Cancel
+</button>
+
+</div>
+
+</div>
+
+</div>
 <!-- Withdraw Popup -->
 
 <div id="withdrawModal" class="modal">
