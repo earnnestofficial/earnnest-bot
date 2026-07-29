@@ -7,7 +7,7 @@ const user = tg.initDataUnsafe.user || {};
 const API_URL = "https://script.google.com/macros/s/AKfycbyiMpkqFKQ6uaE_NTN4IrGt9wE5h2upESzEs4sr_wkMORp4VBkN_L1EUNSYSnuL6UF5fw/exec";
 
 document.getElementById("username").innerHTML =
-"👋 Welcome, " + (user.first_name || "User");
+"ðŸ‘‹ Welcome, " + (user.first_name || "User");
 
 document.getElementById("userid").innerHTML =
 "User ID: " + (user.id || "");
