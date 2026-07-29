@@ -7,7 +7,7 @@ const user = tg.initDataUnsafe.user || {};
 const API_URL = "https://script.google.com/macros/s/AKfycbyiMpkqFKQ6uaE_NTN4IrGt9wE5h2upESzEs4sr_wkMORp4VBkN_L1EUNSYSnuL6UF5fw/exec";
 
 document.getElementById("username").innerHTML =
-" Welcome, " + (user.first_name || "User");
+"👋 Welcome, " + (user.first_name || "User");
 
 document.getElementById("userid").innerHTML =
 "User ID: " + (user.id || "");
@@ -222,6 +222,8 @@ document.getElementById("closeWithdraw").onclick=function(){
 // SUBMIT DEPOSIT
 // =========================
 
+document.getElementById("submitDeposit").onclick = function () {
+
 const method = depositMethod.value;
 const amount = Number(depositAmount.value);
 const trxId = depositTrxId.value.trim();
@@ -275,6 +277,8 @@ fetch(API_URL,{
     showToast("Server Error");
 });
 
+};
+
 // ======================
 // SUBMIT WITHDRAW
 // ======================
@@ -289,6 +293,7 @@ document.getElementById("submitWithdraw").onclick = function () {
         showToast("Select Withdraw Method");
         return;
     }
+    
 
     if (account == "") {
         showToast("Enter Account Number");
