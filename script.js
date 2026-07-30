@@ -4,7 +4,8 @@ Telegram.WebApp.expand();
 const tg = Telegram.WebApp;
 const user = tg.initDataUnsafe.user || {};
 
-const API_URL = "https://script.google.com/macros/s/AKfycby1PfOZ8dPri99Uwa2smMd-Nk66l29RC0w6jNH3HMeqQoKNs_G_WITUM71ar5mEmTePjg/exec"
+    const API_URL = "https://script.google.com/macros/s/AKfycbx4KM0i9IOqmOlwdrW6CxZTiXp1fu2NFdj3WASC7z15NY_Q1MiNTcZKOAp1r6GY3JMI6w/exec"
+
 document.getElementById("username").innerHTML =
 "ðŸ‘‹ Welcome, " + (user.first_name || "User");
 
@@ -33,44 +34,8 @@ window.onload = function(){
     document.getElementById("loading").style.display="none";
 };
 
-// =========================
-// DEPOSIT OPEN
-// =========================
-
-document.getElementById("depositBtn").onclick = function () {
-
-    depositMethod.value = "";
-    depositAmount.value = "";
-    depositTrxId.value = "";
-    depositNumber.value = "";
-
-    depositModal.style.display = "flex";
-};
-
-// =========================
-// DEPOSIT CLOSE
-// =========================
-
-document.getElementById("closeDeposit").onclick = function () {
-    depositModal.style.display = "none";
-};
-
-// Login
-
-fetch(API_URL,{
-    method:"POST",
-    headers:{
-        "Content-Type":"application/x-www-form-urlencoded"
-    },
-    body:
-    "action=login"+
-    "&userId="+encodeURIComponent(user.id||"")+
-    "&name="+encodeURIComponent(user.first_name||"")
-})
-.then(res=>res.text())
-.then(()=>{
-
-    return fetch(API_URL,{
+// 
+const API_URL = "https://script.google.com/macros/s/AKfycby1PfOZ8dPri99Uwa2smMd-Nk66l29RC0w6jNH3HMeqQoKNs_G_WITUM71ar5mEmTePjg/exec"
         method:"POST",
         headers:{
             "Content-Type":"application/x-www-form-urlencoded"
