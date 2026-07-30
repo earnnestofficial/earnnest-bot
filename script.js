@@ -1,41 +1,108 @@
+// ==========================================
+// Earnnest Bot V3.1 Final
+// Part 1
+// ==========================================
+
+// ===== Telegram =====
 Telegram.WebApp.ready();
 Telegram.WebApp.expand();
 
 const tg = Telegram.WebApp;
 const user = tg.initDataUnsafe.user || {};
 
-    const API_URL = "https://script.google.com/macros/s/AKfycbx4KM0i9IOqmOlwdrW6CxZTiXp1fu2NFdj3WASC7z15NY_Q1MiNTcZKOAp1r6GY3JMI6w/exec"
+// ===== API =====
+const API_URL = "https://script.google.com/macros/s/AKfycby1PfOZ8dPri99Uwa2smMd-Nk66l29RC0w6jNH3HMeqQoKNs_G_WITUM71ar5mEmTePjg/exec;
 
-document.getElementById("username").innerHTML =
-"ðŸ‘‹ Welcome, " + (user.first_name || "User");
-
-document.getElementById("userid").innerHTML =
-"User ID: " + (user.id || "");
-
+// ===== User =====
 let balance = 0;
 
+// ===== UI =====
+const loading = document.getElementById("loading");
+
+const username = document.getElementById("username");
+const userid = document.getElementById("userid");
+const balanceText = document.getElementById("balance");
+
+// ===== Withdraw =====
 const withdrawModal = document.getElementById("withdrawModal");
 const withdrawMethod = document.getElementById("withdrawMethod");
 const withdrawAccount = document.getElementById("withdrawAccount");
 const withdrawCoins = document.getElementById("withdrawCoins");
 
+// ===== Deposit =====
 const depositModal = document.getElementById("depositModal");
 const depositMethod = document.getElementById("depositMethod");
 const depositAmount = document.getElementById("depositAmount");
 const depositTrxId = document.getElementById("depositTrxId");
 const depositNumber = document.getElementById("depositNumber");
 
+// ==========================================
+// UI
+// ==========================================
+
+username.innerHTML =
+"👋 Welcome, " + (user.first_name || "User");
+
+userid.innerHTML =
+"User ID: " + (user.id || "Unknown");
+
 function updateBalance(){
-    document.getElementById("balance").innerHTML =
-    balance + " Coins";
+    balanceText.innerHTML = balance + " Coins";
 }
 
+// ==========================================
+// Loading
+// ==========================================
+
 window.onload = function(){
-    document.getElementById("loading").style.display="none";
+    loading.style.display = "none";
 };
 
-// 
-const API_URL = "https://script.google.com/macros/s/AKfycby1PfOZ8dPri99Uwa2smMd-Nk66l29RC0w6jNH3HMeqQoKNs_G_WITUM71ar5mEmTePjg/exec"
+// ==========================================
+// Login
+// ==========================================
+
+function login(){
+
+    fetch(API_URL,{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/x-www-form-urlencoded"
+        },
+        body:
+        "action=login"+
+        "&userId="+encodeURIComponent(user.id||"")+
+        "&name="+encodeURIComponent(user.first_name||"")+
+        "&referral="
+    })
+    .then(res=>res.text())
+    .then(data=>{
+
+        const coins = Number(data);
+
+        if(!isNaN(coins)){
+            balance = coins;
+            updateBalance();
+        }
+
+        getBalance();
+
+    })
+    .catch(()=>{
+
+        showToast("Server Error");
+
+    });
+
+}
+
+// ==========================================
+// Get Balance
+// ==========================================
+
+function getBalance(){
+
+    fetch(API_URL,{
         method:"POST",
         headers:{
             "Content-Type":"application/x-www-form-urlencoded"
@@ -43,20 +110,36 @@ const API_URL = "https://script.google.com/macros/s/AKfycby1PfOZ8dPri99Uwa2smMd-
         body:
         "action=getBalance"+
         "&userId="+encodeURIComponent(user.id||"")
+    })
+    .then(res=>res.text())
+    .then(data=>{
+
+        const coins = Number(data);
+
+        if(!isNaN(coins)){
+            balance = coins;
+            updateBalance();
+        }
+
+    })
+    .catch(()=>{
+
+        showToast("Balance Load Failed");
+
     });
 
-})
-.then(res=>res.text())
-.then(data=>{
+}
 
-    const coins=Number(data);
+// ==========================================
+// Start App
+// ==========================================
 
-    if(!isNaN(coins)){
-        balance=coins;
-        updateBalance();
-    }
+login();
 
-});
+// ==========================================
+// Part 2
+// Daily Bonus + Watch Ads + Referral
+// ==========================================
 
 // ======================
 // DAILY BONUS
@@ -78,7 +161,7 @@ document.getElementById("dailyBtn").onclick = function(){
 
         data = data.trim();
 
-        if(data === "ALREADY_CLAIMED"){
+        if(data === "ALREADY"){
             showToast("Already Claimed Today");
             return;
         }
@@ -88,11 +171,14 @@ document.getElementById("dailyBtn").onclick = function(){
         if(!isNaN(coins)){
             balance = coins;
             updateBalance();
-            showToast("+50 Coins Added");
+            showToast("+10 Coins Added");
         }else{
             showToast("Daily Bonus Failed");
         }
 
+    })
+    .catch(()=>{
+        showToast("Server Error");
     });
 
 };
@@ -101,9 +187,9 @@ document.getElementById("dailyBtn").onclick = function(){
 // WATCH ADS
 // ======================
 
-document.getElementById("adsBtn").onclick=function(){
+document.getElementById("adsBtn").onclick = function(){
 
-    if(typeof show_11437158!=="function"){
+    if(typeof show_11437158 !== "function"){
         showToast("Ad SDK Not Loaded");
         return;
     }
@@ -125,17 +211,19 @@ document.getElementById("adsBtn").onclick=function(){
         .then(res=>res.text())
         .then(data=>{
 
-            const coins=Number(data);
+            const coins = Number(data);
 
             if(!isNaN(coins)){
-                balance=coins;
+                balance = coins;
+                updateBalance();
+                showToast("+2 Coins Added");
             }else{
-                balance+=20;
+                showToast("Reward Failed");
             }
 
-            updateBalance();
-            showToast("+20 Coins Added");
-
+        })
+        .catch(()=>{
+            showToast("Server Error");
         });
 
     })
@@ -151,14 +239,115 @@ document.getElementById("adsBtn").onclick=function(){
 // REFERRAL
 // ======================
 
-document.getElementById("refBtn").onclick=function(){
+document.getElementById("refBtn").onclick = function(){
 
     showToast("Referral System Coming Soon");
 
 };
 
+// ==========================================
+// Part 3
+// Deposit + Withdraw
+// ==========================================
+
 // ======================
-// WITHDRAW POPUP
+// OPEN DEPOSIT
+// ======================
+
+document.getElementById("depositBtn").onclick = function(){
+
+    depositMethod.value = "";
+    depositAmount.value = "";
+    depositTrxId.value = "";
+    depositNumber.value = "";
+
+    depositModal.style.display = "flex";
+
+};
+
+document.getElementById("closeDeposit").onclick = function(){
+
+    depositModal.style.display = "none";
+
+};
+
+// ======================
+// SUBMIT DEPOSIT
+// ======================
+
+document.getElementById("submitDeposit").onclick = function(){
+
+    const method = depositMethod.value;
+    const amount = Number(depositAmount.value);
+    const trxId = depositTrxId.value.trim();
+    const number = depositNumber.value.trim();
+
+    if(method==""){
+        showToast("Select Deposit Method");
+        return;
+    }
+
+    if(isNaN(amount) || amount<100){
+        showToast("Minimum Deposit 100");
+        return;
+    }
+
+    if(trxId==""){
+        showToast("Enter Transaction ID");
+        return;
+    }
+
+    if(number==""){
+        showToast("Enter Sender Number");
+        return;
+    }
+
+    fetch(API_URL,{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/x-www-form-urlencoded"
+        },
+        body:
+        "action=deposit"+
+        "&userId="+encodeURIComponent(user.id||"")+
+        "&method="+encodeURIComponent(method)+
+        "&amount="+encodeURIComponent(amount)+
+        "&trxId="+encodeURIComponent(trxId)+
+        "&paymentNumber="+encodeURIComponent(number)
+    })
+    .then(res=>res.text())
+    .then(data=>{
+
+        if(data=="INVALID"){
+            showToast("Invalid Deposit Information");
+            return;
+        }
+
+        if(data=="USER_NOT_FOUND"){
+            showToast("User Not Found");
+            return;
+        }
+
+        showToast("Deposit ID : " + data);
+
+        depositModal.style.display="none";
+
+        depositMethod.value="";
+        depositAmount.value="";
+        depositTrxId.value="";
+        depositNumber.value="";
+
+    })
+    .catch(()=>{
+
+        showToast("Server Error");
+
+    });
+
+};
+
+// ======================
+// WITHDRAW
 // ======================
 
 document.getElementById("withdrawBtn").onclick=function(){
@@ -182,137 +371,81 @@ document.getElementById("closeWithdraw").onclick=function(){
 
 };
 
-// =========================
-// SUBMIT DEPOSIT
-// =========================
-
-document.getElementById("submitDeposit").onclick = function () {
-
-const method = depositMethod.value;
-const amount = Number(depositAmount.value);
-const trxId = depositTrxId.value.trim();
-const number = depositNumber.value.trim();
-
-if (method == "") {
-    showToast("Select Deposit Method");
-    return;
-}
-
-if (isNaN(amount) || amount < 100) {
-    showToast("Minimum Deposit 100");
-    return;
-}
-
-if (trxId == "") {
-    showToast("Enter Transaction ID");
-    return;
-}
-
-if (number == "") {
-    showToast("Enter Sender Number");
-    return;
-}
-
-fetch(API_URL,{
-    method:"POST",
-    headers:{
-        "Content-Type":"application/x-www-form-urlencoded"
-    },
-    body:
-    "action=deposit"+
-    "&userId="+encodeURIComponent(user.id||"")+
-    "&method="+encodeURIComponent(method)+
-    "&amount="+encodeURIComponent(amount)+
-    "&trxId="+encodeURIComponent(trxId)+
-"&paymentNumber="+encodeURIComponent(number)
-})
-.then(res=>res.text())
-.then(msg=>{
-    showToast(msg);
-
-    depositMethod.value="";
-    depositAmount.value="";
-    depositTrxId.value="";
-    depositNumber.value="";
-
-    depositModal.style.display="none";
-})
-.catch(()=>{
-    showToast("Server Error");
-});
-
-};
-
 // ======================
 // SUBMIT WITHDRAW
 // ======================
 
-document.getElementById("submitWithdraw").onclick = function () {
+document.getElementById("submitWithdraw").onclick=function(){
 
     const method = withdrawMethod.value;
     const account = withdrawAccount.value.trim();
     const coins = Number(withdrawCoins.value);
 
-    if (method == "") {
+    if(method==""){
         showToast("Select Withdraw Method");
         return;
     }
-    
 
-    if (account == "") {
+    if(account==""){
         showToast("Enter Account Number");
         return;
     }
 
-    if (isNaN(coins) || coins < 1000) {
+    if(isNaN(coins) || coins<1000){
         showToast("Minimum 1000 Coins");
         return;
     }
 
-    if (coins > balance) {
+    if(coins>balance){
         showToast("Insufficient Balance");
         return;
     }
 
-    fetch(API_URL, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
+    fetch(API_URL,{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/x-www-form-urlencoded"
         },
         body:
-            "action=withdraw" +
-            "&userId=" + encodeURIComponent(user.id || "") +
-            "&method=" + encodeURIComponent(method) +
-            "&account=" + encodeURIComponent(account) +
-            "&coins=" + encodeURIComponent(coins)
+        "action=withdraw"+
+        "&userId="+encodeURIComponent(user.id||"")+
+        "&method="+encodeURIComponent(method)+
+        "&account="+encodeURIComponent(account)+
+        "&coins="+encodeURIComponent(coins)
     })
-    .then(res => res.text())
-    .then(data => {
+    .then(res=>res.text())
+    .then(data=>{
 
-        if (data == "INSUFFICIENT") {
-            showToast("Insufficient Balance");
-            return;
-        }
-
-        if (data == "USER_NOT_FOUND") {
-            showToast("User Not Found");
+        if(data=="COMING_SOON"){
+            showToast("Withdraw Coming Soon");
             return;
         }
 
         const newBalance = Number(data);
 
-        if (!isNaN(newBalance)) {
+        if(!isNaN(newBalance)){
             balance = newBalance;
             updateBalance();
 
-            withdrawModal.style.display = "none";
+            withdrawModal.style.display="none";
 
             showToast("Withdraw Request Submitted");
         }
 
+    })
+    .catch(()=>{
+
+        showToast("Server Error");
+
     });
 
 };
+
+// ==========================================
+// Earnnest Bot V3.1 Final
+// Part 4
+// Bottom Navigation + Toast
+// ==========================================
 
 // ======================
 // BOTTOM NAVIGATION
@@ -338,20 +471,42 @@ document.getElementById("profileBtn").onclick = function () {
 // TOAST
 // ======================
 
-function showToast(message) {
+function showToast(message){
 
     const toast = document.getElementById("toast");
 
     toast.innerHTML = message;
-    toast.classList.add("show");
 
     toast.style.display = "block";
+    toast.classList.add("show");
 
-    setTimeout(function () {
+    setTimeout(function(){
+
         toast.classList.remove("show");
         toast.style.display = "none";
-    }, 2500);
+
+    },2500);
 
 }
 
-// Version 3.1
+// ======================
+// MODAL CLOSE (Outside Click)
+// ======================
+
+window.onclick = function(event){
+
+    if(event.target === depositModal){
+        depositModal.style.display = "none";
+    }
+
+    if(event.target === withdrawModal){
+        withdrawModal.style.display = "none";
+    }
+
+};
+
+// ======================
+// VERSION
+// ======================
+
+console.log("Earnnest Bot V3.1 Final Loaded");
