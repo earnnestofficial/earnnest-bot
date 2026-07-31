@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Earnnest Bot Admin Panel</title>
+
+<link rel="stylesheet" href="admin.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <header class="header">
+        <h1>Earnnest Bot Admin</h1>
+        <p>Version 3.0</p>
+    </header>
+
+    <div class="dashboard">
+
+        <div class="card">
+            <h3>Total Users</h3>
+            <h2 id="totalUsers">0</h2>
+        </div>
+
+        <div class="card">
+            <h3>Pending Deposits</h3>
+            <h2 id="pendingDeposits">0</h2>
+        </div>
+
+        <div class="card">
+            <h3>Pending Withdraws</h3>
+            <h2 id="pendingWithdraws">0</h2>
+        </div>
+
+        <div class="card">
+            <h3>Total Balance</h3>
+            <h2 id="totalBalance">0</h2>
+        </div>
+
+    </div>
+
+    <div class="menu">
+
+        <button onclick="showPage('deposit')">
+            Deposit
+        </button>
+
+        <button onclick="showPage('withdraw')">
+            Withdraw
+        </button>
+
+        <button onclick="showPage('users')">
+            Users
+        </button>
+
+        <button onclick="showPage('history')">
+            History
+        </button>
+
+        <button onclick="showPage('settings')">
+            Settings
+        </button>
+
+    </div>
+    
+    <!-- Deposit Page -->
+<div id="deposit" class="page">
+
+    <h2>Pending Deposits</h2>
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Amount</th>
+                <th>Method</th>
+                <th>TRX ID</th>
+                <th>Action</th>
+            </tr>
+
+        </thead>
+
+        <tbody id="depositTable">
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<!-- Withdraw Page -->
+<div id="withdraw" class="page" style="display:none;">
+
+    <h2>Pending Withdraws</h2>
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Amount</th>
+                <th>Method</th>
+                <th>Account</th>
+                <th>Action</th>
+            </tr>
+
+        </thead>
+
+        <tbody id="withdrawTable">
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<!-- Users Page -->
+<div id="users" class="page" style="display:none;">
+
+    <h2>Users</h2>
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Balance</th>
+                <th>Status</th>
+            </tr>
+
+        </thead>
+
+        <tbody id="usersTable">
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<!-- History Page -->
+<div id="history" class="page" style="display:none;">
+
+    <h2>History</h2>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>User</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody id="historyTable">
+        </tbody>
+
+    </table>
+
+</div>
+
+<!-- Settings Page -->
+<div id="settings" class="page" style="display:none;">
+
+    <h2>Settings</h2>
+
+    <div id="settingsBox"></div>
+
+</div>
+
+</div>
+
+<script src="admin.js"></script>
+
+</body>
+</html>
