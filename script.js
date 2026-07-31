@@ -8,7 +8,23 @@ Telegram.WebApp.ready();
 Telegram.WebApp.expand();
 
 const tg = Telegram.WebApp;
-const user = tg.initDataUnsafe.user || {};
+
+// ===== Developer Mode =====
+const DEV_MODE =
+  typeof Telegram === "undefined" ||
+  !Telegram.WebApp ||
+  !Telegram.WebApp.initDataUnsafe ||
+  !Telegram.WebApp.initDataUnsafe.user;
+
+const user = DEV_MODE
+  ? {
+      id: "999999999",
+      first_name: "Developer"
+    }
+  : Telegram.WebApp.initDataUnsafe.user;
+
+console.log("Developer Mode:", DEV_MODE);
+console.log("User:", user);
 
 // ===== API =====
 
