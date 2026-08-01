@@ -163,7 +163,4 @@ async function loadUsers() {
 
 async function loadHistory() {
 
-    const table = document.getElementById("historyTable");
-
-    table.innerHTML = "";
-}
+  
