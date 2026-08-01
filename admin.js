@@ -1,259 +1,530 @@
-// ===========================
-// Earnnest Bot Admin Panel
+// ==========================================
+// Earnnest Bot V3.1 Final
 // Part 1
-// ===========================
+// ==========================================
+
+// ===== Telegram =====
+Telegram.WebApp.ready();
+Telegram.WebApp.expand();
+
+const tg = Telegram.WebApp;
+
+// ===== Developer Mode =====
+const DEV_MODE =
+  typeof Telegram === "undefined" ||
+  !Telegram.WebApp ||
+  !Telegram.WebApp.initDataUnsafe ||
+  !Telegram.WebApp.initDataUnsafe.user;
+
+const user = DEV_MODE
+  ? {
+      id: "999999999",
+      first_name: "Developer"
+    }
+  : Telegram.WebApp.initDataUnsafe.user;
+
+console.log("Developer Mode:", DEV_MODE);
+console.log("User:", user);
+
+// ===== API =====
 
 const API_URL = "https://script.google.com/macros/s/AKfycby1PfOZ8dPri99Uwa2smMd-Nk66l29RC0w6jNH3HMeqQoKNs_G_WITUM71ar5mEmTePjg/exec";
 
-function showPage(page) {
+// ===== User =====
+let balance = 0;
 
-    document.querySelectorAll(".page").forEach(p => {
-        p.style.display = "none";
-    });
+// ===== UI =====
 
-    document.getElementById(page).style.display = "block";
+const loading = document.getElementById("loading");
+const username = document.getElementById("username");
+const userid = document.getElementById("userid");
+const balanceText = document.getElementById("balance");
+
+// ===== Withdraw =====
+const withdrawModal = document.getElementById("withdrawModal");
+const withdrawMethod = document.getElementById("withdrawMethod");
+const withdrawAccount = document.getElementById("withdrawAccount");
+const withdrawCoins = document.getElementById("withdrawCoins");
+
+// ===== Deposit =====
+const depositModal = document.getElementById("depositModal");
+const depositMethod = document.getElementById("depositMethod");
+const depositAmount = document.getElementById("depositAmount");
+const depositTrxId = document.getElementById("depositTrxId");
+const depositNumber = document.getElementById("depositNumber");
+
+// ==========================================
+// UI
+// ==========================================
+
+username.innerHTML =
+" Welcome, " + (user.first_name || "User");
+
+userid.innerHTML =
+"User ID: " + (user.id || "Unknown");
+
+function updateBalance(){
+    balanceText.innerHTML = balance + " Coins";
 }
 
-window.onload = function () {
+// ==========================================
+// Loading
+// ==========================================
 
-    showPage("deposit");
-
-    loadDashboard();
-    loadDeposits();
-    loadWithdraws();
-    loadUsers();
-    loadHistory();
+window.onload = function(){
+    loading.style.display = "none";
 };
 
-async function api(action, data = {}) {
+// ==========================================
+// Login
+// ==========================================
 
-    const form = new URLSearchParams();
+function login(){
 
-    form.append("action", action);
+    fetch(API_URL,{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/x-www-form-urlencoded"
+        },
+        body:
+        "action=login"+
+        "&userId="+encodeURIComponent(user.id||"")+
+        "&name="+encodeURIComponent(user.first_name||"")+
+        "&referral="
+    })
+    .then(res=>res.text())
+    .then(data=>{
 
-    for (const key in data) {
-        form.append(key, data[key]);
+        if (data == "REGISTER") {
+    registerUser();
+    return;
+}
+
+const coins = Number(data);
+
+if (!isNaN(coins)) {
+    balance = coins;
+    updateBalance();
+}
+
+getBalance();
+})
+.catch(() => {
+    showToast("Server Error");
+});
+}
+
+// ==========================================
+// Get Balance
+// ==========================================
+
+function getBalance(){
+
+    fetch(API_URL,{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/x-www-form-urlencoded"
+        },
+        body:
+        "action=getBalance"+
+        "&userId="+encodeURIComponent(user.id||"")
+    })
+    .then(res=>res.text())
+    .then(data=>{
+
+        const coins = Number(data);
+
+        if(!isNaN(coins)){
+            balance = coins;
+            updateBalance();
+        }
+
+    })
+    .catch(()=>{
+
+        showToast("Balance Load Failed");
+
+    });
+
+}
+
+// ==========================================
+// Start App
+// ==========================================
+
+login();
+
+// ==========================================
+// Part 2
+// Daily Bonus + Watch Ads + Referral
+// ==========================================
+
+// ======================
+// DAILY BONUS
+// ======================
+
+document.getElementById("dailyBtn").onclick = function(){
+
+    fetch(API_URL,{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/x-www-form-urlencoded"
+        },
+        body:
+        "action=daily"+
+        "&userId="+encodeURIComponent(user.id||"")
+    })
+    .then(res=>res.text())
+    .then(data=>{
+
+        data = data.trim();
+
+        if(data === "ALREADY"){
+            showToast("Already Claimed Today");
+            return;
+        }
+
+        const coins = Number(data);
+
+        if(!isNaN(coins)){
+            balance = coins;
+            updateBalance();
+            showToast("+10 Coins Added");
+        }else{
+            showToast("Daily Bonus Failed");
+        }
+
+    })
+    .catch(()=>{
+        showToast("Server Error");
+    });
+
+};
+
+// ======================
+// WATCH ADS
+// ======================
+
+document.getElementById("adsBtn").onclick = function(){
+
+    if(typeof show_11437158 !== "function"){
+        showToast("Ad SDK Not Loaded");
+        return;
     }
 
-    const res = await fetch(API_URL, {
-        method: "POST",
-        body: form
+    showToast("Loading Ad...");
+
+    show_11437158()
+    .then(()=>{
+
+        fetch(API_URL,{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/x-www-form-urlencoded"
+            },
+            body:
+            "action=reward"+
+            "&userId="+encodeURIComponent(user.id||"")
+        })
+        .then(res=>res.text())
+        .then(data=>{
+
+            const coins = Number(data);
+
+            if(!isNaN(coins)){
+                balance = coins;
+                updateBalance();
+                showToast("+2 Coins Added");
+            }else{
+                showToast("Reward Failed");
+            }
+
+        })
+        .catch(()=>{
+            showToast("Server Error");
+        });
+
+    })
+    .catch(()=>{
+
+        showToast("Ad Cancelled");
+
     });
 
-    return await res.json();
-}
+};
 
-// ===========================
-// Dashboard
-// ===========================
+// ======================
+// REFERRAL
+// ======================
 
-async function loadDashboard() {
+document.getElementById("refBtn").onclick = function(){
 
-    const data = await api("adminDashboard");
+    showToast("Referral System Coming Soon");
 
-    document.getElementById("totalUsers").innerText =
-        data.totalUsers || 0;
+};
 
-    document.getElementById("pendingDeposits").innerText =
-        data.pendingDeposits || 0;
+// ==========================================
+// Part 3
+// Deposit + Withdraw
+// ==========================================
 
-    document.getElementById("pendingWithdraws").innerText =
-        data.pendingWithdraws || 0;
+// ======================
+// OPEN DEPOSIT
+// ======================
 
-    document.getElementById("totalBalance").innerText =
-        data.totalBalance || 0;
-}
+document.getElementById("depositBtn").onclick = function(){
 
-// ===========================
-// Pending Deposits
-// ===========================
+    depositMethod.value = "";
+    depositAmount.value = "";
+    depositTrxId.value = "";
+    depositNumber.value = "";
 
-async function loadDeposits() {
+    depositModal.style.display = "flex";
 
-    const data = await api("getPendingDeposits");
+};
 
-    const table = document.getElementById("depositTable");
+document.getElementById("closeDeposit").onclick = function(){
 
-    table.innerHTML = "";
+    depositModal.style.display = "none";
 
-    (data.deposits || []).forEach(item => {
+};
 
-        table.innerHTML += `
-        <tr>
-            <td>${item.userId}</td>
-            <td>${item.name}</td>
-            <td>${item.amount}</td>
-            <td>${item.method}</td>
-            <td>${item.trxId}</td>
-            <td>
-                <button class="approve"
-                    onclick="approveDeposit('${item.id}')">
-                    Approve
-                </button>
+// ======================
+// SUBMIT DEPOSIT
+// ======================
 
-                <button class="reject"
-                    onclick="rejectDeposit('${item.id}')">
-                    Reject
-                </button>
-            </td>
-        </tr>`;
+document.getElementById("submitDeposit").onclick = function(){
+
+    const method = depositMethod.value;
+    const amount = Number(depositAmount.value);
+    const trxId = depositTrxId.value.trim();
+    const number = depositNumber.value.trim();
+
+    if(method==""){
+        showToast("Select Deposit Method");
+        return;
+    }
+
+    if(isNaN(amount) || amount<100){
+        showToast("Minimum Deposit 100");
+        return;
+    }
+
+    if(trxId==""){
+        showToast("Enter Transaction ID");
+        return;
+    }
+
+    if(number==""){
+        showToast("Enter Sender Number");
+        return;
+    }
+
+    fetch(API_URL,{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/x-www-form-urlencoded"
+        },
+        body:
+        "action=deposit"+
+        "&userId="+encodeURIComponent(user.id||"")+
+        "&method="+encodeURIComponent(method)+
+        "&amount="+encodeURIComponent(amount)+
+        "&trxId="+encodeURIComponent(trxId)+
+        "&paymentNumber="+encodeURIComponent(number)
+    })
+    .then(res=>res.text())
+    .then(data=>{
+
+        if(data=="INVALID"){
+            showToast("Invalid Deposit Information");
+            return;
+        }
+
+        if(data=="USER_NOT_FOUND"){
+            showToast("User Not Found");
+            return;
+        }
+
+        showToast("Deposit ID : " + data);
+
+        depositModal.style.display="none";
+
+        depositMethod.value="";
+        depositAmount.value="";
+        depositTrxId.value="";
+        depositNumber.value="";
+
+    })
+    .catch(()=>{
+
+        showToast("Server Error");
+
     });
 
-}
+};
 
-// ===========================
-// Deposit Actions
-// ===========================
+// ======================
+// WITHDRAW
+// ======================
 
-async function approveDeposit(id) {
+document.getElementById("withdrawBtn").onclick=function(){
 
-    if (!confirm("Approve this deposit?")) return;
+    if(balance<1000){
+        showToast("Minimum 1000 Coins Required");
+        return;
+    }
 
-    const res = await api("approveDeposit", {
-        depositId: id,
-        admin: "Admin"
+    withdrawMethod.value="";
+    withdrawAccount.value="";
+    withdrawCoins.value="";
+
+    withdrawModal.style.display="flex";
+
+};
+
+document.getElementById("closeWithdraw").onclick=function(){
+
+    withdrawModal.style.display="none";
+
+};
+
+// ======================
+// SUBMIT WITHDRAW
+// ======================
+
+document.getElementById("submitWithdraw").onclick=function(){
+
+    const method = withdrawMethod.value;
+    const account = withdrawAccount.value.trim();
+    const coins = Number(withdrawCoins.value);
+
+    if(method==""){
+        showToast("Select Withdraw Method");
+        return;
+    }
+
+    if(account==""){
+        showToast("Enter Account Number");
+        return;
+    }
+
+    if(isNaN(coins) || coins<1000){
+        showToast("Minimum 1000 Coins");
+        return;
+    }
+
+    if(coins>balance){
+        showToast("Insufficient Balance");
+        return;
+    }
+
+    fetch(API_URL,{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/x-www-form-urlencoded"
+        },
+        body:
+        "action=withdraw"+
+        "&userId="+encodeURIComponent(user.id||"")+
+        "&method="+encodeURIComponent(method)+
+        "&account="+encodeURIComponent(account)+
+        "&coins="+encodeURIComponent(coins)
+    })
+    .then(res=>res.text())
+    .then(data=>{
+
+        if(data=="COMING_SOON"){
+            showToast("Withdraw Coming Soon");
+            return;
+        }
+
+        const newBalance = Number(data);
+
+        if(!isNaN(newBalance)){
+            balance = newBalance;
+            updateBalance();
+
+            withdrawModal.style.display="none";
+
+            showToast("Withdraw Request Submitted");
+        }
+
+    })
+    .catch(()=>{
+
+        showToast("Server Error");
+
     });
 
-    alert(res);
+};
 
-    loadDashboard();
-    loadDeposits();
-    loadUsers();
-    loadHistory();
-}
+// ==========================================
+// Earnnest Bot V3.1 Final
+// Part 4
+// Bottom Navigation + Toast
+// ==========================================
 
-async function rejectDeposit(id) {
+// ======================
+// BOTTOM NAVIGATION
+// ======================
 
-    if (!confirm("Reject this deposit?")) return;
+document.getElementById("homeBtn").onclick = function () {
+    showToast("Home");
+};
 
-    const res = await api("rejectDeposit", {
-        id: id
-    });
+document.getElementById("earnBtn").onclick = function () {
+    showToast("Earn");
+};
 
-    alert(res.message || "Done");
+document.getElementById("referralBtn").onclick = function () {
+    showToast("Referral");
+};
 
-    loadDashboard();
-    loadDeposits();
-}
+document.getElementById("profileBtn").onclick = function () {
+    showToast("Profile");
+};
 
-// ===========================
-// Withdraws
-// ===========================
+// ======================
+// TOAST
+// ======================
 
-async function loadWithdraws() {
+function showToast(message){
 
-    const data = await api("getPendingWithdraws");
+    const toast = document.getElementById("toast");
 
-    const table = document.getElementById("withdrawTable");
+    toast.innerHTML = message;
 
-    table.innerHTML = "";
+    toast.style.display = "block";
+    toast.classList.add("show");
 
-    (data.withdraws || []).forEach(item => {
+    setTimeout(function(){
 
-        table.innerHTML += `
-        <tr>
-            <td>${item.userId}</td>
-            <td>${item.name}</td>
-            <td>${item.amount}</td>
-            <td>${item.method}</td>
-            <td>${item.account}</td>
-            <td>
-                <button class="approve"
-                    onclick="approveWithdraw('${item.id}')">
-                    Approve
-                </button>
+        toast.classList.remove("show");
+        toast.style.display = "none";
 
-                <button class="reject"
-                    onclick="rejectWithdraw('${item.id}')">
-                    Reject
-                </button>
-            </td>
-        </tr>`;
-    });
+    },2500);
 
 }
 
-async function approveWithdraw(id) {
+// ======================
+// MODAL CLOSE (Outside Click)
+// ======================
 
-    if (!confirm("Approve this withdraw?")) return;
+window.onclick = function(event){
 
-    const res = await api("approveWithdraw", {
-        withdrawId: id,
-        admin: "Admin"
-    });
+    if(event.target === depositModal){
+        depositModal.style.display = "none";
+    }
 
-    alert(res.message || "Done");
+    if(event.target === withdrawModal){
+        withdrawModal.style.display = "none";
+    }
 
-    loadDashboard();
-    loadWithdraws();
-    loadUsers();
-    loadHistory();
-}
+};
 
-async function rejectWithdraw(id) {
+// ======================
+// VERSION
+// ======================
 
-    if (!confirm("Reject this withdraw?")) return;
-
-    const res = await api("rejectWithdraw", {
-        withdrawId: id,
-        admin: "Admin"
-    });
-
-    alert(res.message || "Done");
-
-    loadDashboard();
-    loadWithdraws();
-}
-
-// ===========================
-// Users
-// ===========================
-
-async function loadUsers() {
-
-    const data = await api("getUsers");
-
-    const table = document.getElementById("usersTable");
-
-    table.innerHTML = "";
-
-    (data.users || []).forEach(item => {
-
-        table.innerHTML += `
-        <tr>
-            <td>${item.userId}</td>
-            <td>${item.name}</td>
-            <td>${item.balance}</td>
-            <td>${item.totalDeposit}</td>
-            <td>${item.totalWithdraw}</td>
-            <td>${item.status}</td>
-        </tr>`;
-    });
-
-}
-
-// ===========================
-// History
-// ===========================
-
-async function loadHistory() {
-
-    const data = await api("getHistory");
-
-    const table = document.getElementById("historyTable");
-
-    table.innerHTML = "";
-
-    (data.history || []).forEach(item => {
-
-        table.innerHTML += `
-        <tr>
-            <td>${item.date}</td>
-            <td>${item.userId}</td>
-            <td>${item.type}</td>
-            <td>${item.amount}</td>
-            <td>${item.note}</td>
-        </tr>`;
-    });
-
-}
+console.log("Earnnest Bot V3.1 Final Loaded");
