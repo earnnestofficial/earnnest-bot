@@ -31,7 +31,6 @@ console.log("User:", user);
 const API_URL = "https://script.google.com/macros/s/AKfycby1PfOZ8dPri99Uwa2smMd-Nk66l29RC0w6jNH3HMeqQoKNs_G_WITUM71ar5mEmTePjg/exec";
 
 // ===== User =====
-
 let balance = 0;
 
 // ===== UI =====
@@ -59,7 +58,7 @@ const depositNumber = document.getElementById("depositNumber");
 // ==========================================
 
 username.innerHTML =
-"👋 Welcome, " + (user.first_name || "User");
+" Welcome, " + (user.first_name || "User");
 
 userid.innerHTML =
 "User ID: " + (user.id || "Unknown");
@@ -96,22 +95,23 @@ function login(){
     .then(res=>res.text())
     .then(data=>{
 
-        const coins = Number(data);
+        if (data == "REGISTER") {
+    registerUser();
+    return;
+}
 
-        if(!isNaN(coins)){
-            balance = coins;
-            updateBalance();
-        }
+const coins = Number(data);
 
-        getBalance();
+if (!isNaN(coins)) {
+    balance = coins;
+    updateBalance();
+}
 
-    })
-    .catch(()=>{
-
-        showToast("Server Error");
-
-    });
-
+getBalance();
+})
+.catch(() => {
+    showToast("Server Error");
+});
 }
 
 // ==========================================
@@ -153,6 +153,63 @@ function getBalance(){
 // ==========================================
 
 login();
+
+// ======================
+// REGISTRATION
+// ======================
+
+const registerModal = document.getElementById("registerModal");
+
+function registerUser(){
+    registerModal.style.display = "flex";
+}
+
+document.getElementById("submitRegister").onclick = function(){
+
+    const phone = document.getElementById("phone").value.trim();
+    const payment = document.getElementById("payment").value.trim();
+    const referral = document.getElementById("referral").value.trim();
+
+    if(phone==""){
+        showToast("Enter Phone Number");
+        return;
+    }
+
+    if(payment==""){
+        showToast("Enter Payment Number");
+        return;
+    }
+
+    fetch(API_URL,{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/x-www-form-urlencoded"
+        },
+        body:
+        "action=registerUser"+
+        "&userId="+encodeURIComponent(user.id)+
+        "&name="+encodeURIComponent(user.first_name)+
+        "&phone="+encodeURIComponent(phone)+
+        "&payment="+encodeURIComponent(payment)+
+        "&referral="+encodeURIComponent(referral)
+    })
+    .then(res=>res.text())
+    .then(data=>{
+
+        if(data=="SUCCESS"){
+            registerModal.style.display="none";
+            showToast("Registration Successful");
+            login();
+        }else{
+            showToast(data);
+        }
+
+    })
+    .catch(()=>{
+        showToast("Server Error");
+    });
+
+};
 
 // ==========================================
 // Part 2
@@ -521,6 +578,11 @@ window.onclick = function(event){
         withdrawModal.style.display = "none";
     }
 
+
+  if(event.target === registerModal){
+        registerModal.style.display = "none";
+    }
+    
 };
 
 // ======================
