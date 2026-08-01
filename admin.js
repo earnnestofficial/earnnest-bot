@@ -1,4 +1,5 @@
-// ===========================// Earnnest Bot Admin Panel
+// ===========================
+// Earnnest Bot Admin Panel
 // Part 1
 // ===========================
 
@@ -141,9 +142,67 @@ async function rejectDeposit(id) {
 
 async function loadWithdraws() {
 
+    const data = await api("getPendingWithdraws");
+
     const table = document.getElementById("withdrawTable");
 
     table.innerHTML = "";
+
+    (data.withdraws || []).forEach(item => {
+
+        table.innerHTML += `
+        <tr>
+            <td>${item.userId}</td>
+            <td>${item.name}</td>
+            <td>${item.amount}</td>
+            <td>${item.method}</td>
+            <td>${item.account}</td>
+            <td>
+                <button class="approve"
+                    onclick="approveWithdraw('${item.id}')">
+                    Approve
+                </button>
+
+                <button class="reject"
+                    onclick="rejectWithdraw('${item.id}')">
+                    Reject
+                </button>
+            </td>
+        </tr>`;
+    });
+
+}
+
+async function approveWithdraw(id) {
+
+    if (!confirm("Approve this withdraw?")) return;
+
+    const res = await api("approveWithdraw", {
+        withdrawId: id,
+        admin: "Admin"
+    });
+
+    alert(res.message || "Done");
+
+    loadDashboard();
+    loadWithdraws();
+    loadUsers();
+    loadHistory();
+}
+
+async function rejectWithdraw(id) {
+
+    if (!confirm("Reject this withdraw?")) return;
+
+    const res = await api("rejectWithdraw", {
+        withdrawId: id,
+        admin: "Admin"
+    });
+
+    alert(res.message || "Done");
+
+    loadDashboard();
+    loadWithdraws();
 }
 
 // ===========================
@@ -152,9 +211,25 @@ async function loadWithdraws() {
 
 async function loadUsers() {
 
+    const data = await api("getUsers");
+
     const table = document.getElementById("usersTable");
 
     table.innerHTML = "";
+
+    (data.users || []).forEach(item => {
+
+        table.innerHTML += `
+        <tr>
+            <td>${item.userId}</td>
+            <td>${item.name}</td>
+            <td>${item.balance}</td>
+            <td>${item.totalDeposit}</td>
+            <td>${item.totalWithdraw}</td>
+            <td>${item.status}</td>
+        </tr>`;
+    });
+
 }
 
 // ===========================
@@ -163,4 +238,22 @@ async function loadUsers() {
 
 async function loadHistory() {
 
-  
+    const data = await api("getHistory");
+
+    const table = document.getElementById("historyTable");
+
+    table.innerHTML = "";
+
+    (data.history || []).forEach(item => {
+
+        table.innerHTML += `
+        <tr>
+            <td>${item.date}</td>
+            <td>${item.userId}</td>
+            <td>${item.type}</td>
+            <td>${item.amount}</td>
+            <td>${item.note}</td>
+        </tr>`;
+    });
+
+}
