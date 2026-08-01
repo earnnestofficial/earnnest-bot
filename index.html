@@ -1,229 +1,490 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
+
 
 <head>
 
+
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
 
 <title>Earnnest Bot</title>
 
+
+
 <link rel="stylesheet" href="style.css">
+
+
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
+
+
 <!-- Monetag SDK -->
+
 <script
+
 src="//libtl.com/sdk.js"
+
 data-zone="11437158"
+
 data-sdk="show_11437158">
+
 </script>
+
+
 
 </head>
 
+
+
 <body>
+
+
 
 <!-- Loading -->
 
+
+
 <div id="loading" class="loading">
+
 Loading...
+
 </div>
+
+
 
 <!-- Header -->
 
+
+
 <div class="header">
+
+
 
 <h1>💰 Earnnest Bot</h1>
 
+
+
 <p id="username">
+
 Welcome
+
 </p>
 
+
+
 <small id="userid">
+
 </small>
 
+
+
 </div>
+
+
 
 <!-- Balance -->
 
+
+
 <div class="card">
 
+
+
 <h2>
+
 Balance
+
 </h2>
 
+
+
 <div
+
 class="balance"
+
 id="balance">
+
+
 
 0 Coins
 
-</div>
+
 
 </div>
+
+
+
+</div>
+
+
 
 <!-- Main Buttons -->
 
+
+
 <div class="grid">
 
+
+
 <button class="btn" id="dailyBtn">
+
 🎁 Daily Bonus
+
 </button>
+
+
 
 <button class="btn" id="adsBtn">
+
 ▶ Watch Ads
+
 </button>
+
+
 
 <button class="btn" id="refBtn">
+
 👥 Referral
+
 </button>
+
+
 
 <button class="btn" id="depositBtn">
+
 💵 Deposit
+
 </button>
 
+
+
 <button class="btn" id="withdrawBtn">
+
 💸 Withdraw
+
 </button>
+
+
+
+</div>
+
+
+<!-- Registration Popup -->
+<div id="registerModal" class="modal">
+
+  <div class="modal-content">
+
+    <h2>Registration</h2>
+
+    <input
+      type="text"
+      id="phone"
+      placeholder="Phone Number">
+
+    <input
+      type="text"
+      id="payment"
+      placeholder="Payment Number">
+
+    <input
+      type="text"
+      id="referral"
+      placeholder="Referral Code (Optional)">
+
+    <div class="modal-buttons">
+
+      <button id="submitRegister">
+        Register
+      </button>
+
+    </div>
+
+  </div>
 
 </div>
 
 <!-- Deposit Popup -->
 
+
+
 <div id="depositModal" class="modal">
 
+
+
 <div class="modal-content">
+
+
 
 <h2>Deposit Request</h2>
 
+
+
 <select id="depositMethod">
+
 <option value="">Select Method</option>
+
 <option value="Bkash">Bkash</option>
+
 <option value="Nagad">Nagad</option>
+
 <option value="Binance">Binance</option>
+
 </select>
 
+
+
 <input
+
 type="number"
+
 id="depositAmount"
+
 placeholder="Enter Amount">
 
-<input
-type="text"
-id="depositTrxId"
-placeholder="Transaction ID">
+
 
 <input
+
 type="text"
+
+id="depositTrxId"
+
+placeholder="Transaction ID">
+
+
+
+<input
+
+type="text"
+
 id="depositNumber"
+
 placeholder="Payment Number">
+
+
 
 <div class="modal-buttons">
 
+
+
 <button id="submitDeposit">
+
 Submit
+
 </button>
+
+
 
 <button id="closeDeposit">
+
 Cancel
+
 </button>
 
-</div>
+
 
 </div>
 
+
+
 </div>
+
+
+
+</div>
+
 <!-- Withdraw Popup -->
+
+
 
 <div id="withdrawModal" class="modal">
 
+
+
 <div class="modal-content">
+
+
 
 <h2>Withdraw Request</h2>
 
+
+
 <select id="withdrawMethod">
+
 <option value="">Select Method</option>
+
 <option value="Bkash">Bkash</option>
+
 <option value="Nagad">Nagad</option>
+
 <option value="Binance">Binance</option>
+
 </select>
 
-<input
-type="text"
-id="withdrawAccount"
-placeholder="Account Number">
+
 
 <input
+
+type="text"
+
+id="withdrawAccount"
+
+placeholder="Account Number">
+
+
+
+<input
+
 type="number"
+
 id="withdrawCoins"
+
 placeholder="Enter Coins">
+
+
 
 <div class="modal-buttons">
 
+
+
 <button id="submitWithdraw">
+
 Submit
+
 </button>
+
+
 
 <button id="closeWithdraw">
+
 Cancel
+
 </button>
 
-</div>
+
 
 </div>
 
+
+
 </div>
+
+
+
+</div>
+
+
 
 <!-- Tasks -->
 
+
+
 <div class="tasks">
+
+
 
 <h2>Tasks</h2>
 
+
+
 <div class="task">
+
 <span>Join Telegram</span>
+
 <span>+100</span>
+
 </div>
 
+
+
 <div class="task">
+
 <span>Join Channel</span>
+
 <span>+100</span>
+
 </div>
+
+
 
 <div class="task">
+
 <span>Follow Facebook</span>
+
 <span>+100</span>
-</div>
 
 </div>
+
+
+
+</div>
+
+
 
 <!-- Bottom Navigation -->
 
+
+
 <div class="bottom">
 
+
+
 <button id="homeBtn">
+
 🏠 Home
+
 </button>
+
+
 
 <button id="earnBtn">
+
 💰 Earn
+
 </button>
+
+
 
 <button id="referralBtn">
+
 👥 Referral
+
 </button>
 
+
+
 <button id="profileBtn">
+
 👤 Profile
+
 </button>
+
+
 
 </div>
 
+
+
 <!-- Toast -->
+
+
 
 <div id="toast" class="toast"></div>
 
+
+
 <script src="script.js"></script>
 
+
+
 </body>
+
 </html>
