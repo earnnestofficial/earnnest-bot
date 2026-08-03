@@ -514,11 +514,11 @@ if(data=="MINIMUM_1000"){
     return;
 }
 
-        showToast("Withdraw Request Submitted");
+        showToast("Request Submitted (Pending Approval)");
 
 withdrawModal.style.display = "none";
 
-// loadBalance();
+getBalance();
 
     })
     .catch(()=>{
