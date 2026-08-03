@@ -353,7 +353,11 @@ document.getElementById("submitDeposit").onclick = function(){
 
     const method = depositMethod.value;
     const amount = Number(depositAmount.value);
-    const trxId = depositTrxId.value.trim();
+    if (!Number.isFinite(amount) || amount <= 0) {
+    showToast("Enter a valid amount");
+    return;
+}
+const trxId = depositTrxId.value.trim();
     const number = depositNumber.value.trim();
 
     if(method==""){
