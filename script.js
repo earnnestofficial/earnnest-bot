@@ -518,7 +518,7 @@ if(data=="MINIMUM_1000"){
 
 withdrawModal.style.display = "none";
 
-loadBalance();
+// loadBalance();
 
     })
     .catch(()=>{
