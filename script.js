@@ -492,20 +492,30 @@ document.getElementById("submitWithdraw").onclick=function(){
     .then(data=>{
 
         if(data=="COMING_SOON"){
-            showToast("Withdraw Coming Soon");
-            return;
-        }
+    showToast("Withdraw Coming Soon");
+    return;
+}
 
-        const newBalance = Number(data);
+if(data=="PENDING_WITHDRAW"){
+    showToast("You Already Have a Pending Withdraw");
+    return;
+}
 
-        if(!isNaN(newBalance)){
-            balance = newBalance;
-            updateBalance();
+if(data=="INSUFFICIENT_BALANCE"){
+    showToast("Insufficient Balance");
+    return;
+}
 
-            withdrawModal.style.display="none";
+if(data=="MINIMUM_1000"){
+    showToast("Minimum 1000 Coins");
+    return;
+}
 
-            showToast("Withdraw Request Submitted");
-        }
+        showToast("Withdraw Request Submitted");
+
+withdrawModal.style.display = "none";
+
+loadBalance();
 
     })
     .catch(()=>{
