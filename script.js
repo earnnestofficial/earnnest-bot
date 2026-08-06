@@ -52,6 +52,11 @@ const depositAmount = document.getElementById("depositAmount");
 const depositTrxId = document.getElementById("depositTrxId");
 const depositNumber = document.getElementById("depositNumber");
 
+// ===== Referral =====
+const referralModal = document.getElementById("referralModal");
+const refLink = document.getElementById("refLink");
+const totalReferrals = document.getElementById("totalReferrals");
+
 // ==========================================
 // UI
 // ==========================================
