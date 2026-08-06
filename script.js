@@ -31,6 +31,7 @@ console.log("User:", user);
 const API_URL = "https://script.google.com/macros/s/AKfycby1PfOZ8dPri99Uwa2smMd-Nk66l29RC0w6jNH3HMeqQoKNs_G_WITUM71ar5mEmTePjg/exec";
 // ===== User =====
 let balance = 0;
+
 // ===== UI =====
 
 const loading = document.getElementById("loading");
@@ -312,10 +313,12 @@ document.getElementById("adsBtn").onclick = function(){
 // REFERRAL
 // ======================
 
-document.getElementById("refBtn").onclick = function(){
+document.getElementById("refBtn").onclick = function () {
+    openReferral();
+};
 
-    showToast("Referral System Coming Soon");
-
+document.getElementById("referralBtn").onclick = function () {
+    openReferral();
 };
 
 // ==========================================
@@ -595,6 +598,35 @@ window.onclick = function(event){
         registerModal.style.display = "none";
     }
     
+};
+
+// =========================
+// OPEN REFERRAL
+// =========================
+
+function openReferral(){
+
+    referralModal.style.display = "flex";
+
+    const refLink =
+"https://t.me/earnnesstbot?start=" + tg.initDataUnsafe.user.id;
+
+    document.getElementById("refLink").value = refLink;
+
+}
+document.getElementById("closeReferral").onclick = function () {
+    referralModal.style.display = "none";
+};
+
+document.getElementById("copyRefBtn").onclick = function () {
+    const refLink = document.getElementById("refLink");
+
+    refLink.select();
+    refLink.setSelectionRange(0, 99999);
+
+    navigator.clipboard.writeText(refLink.value);
+
+    showToast("Referral Link Copied");
 };
 
 // ======================
