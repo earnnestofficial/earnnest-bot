@@ -31,7 +31,6 @@ console.log("User:", user);
 const API_URL = "https://script.google.com/macros/s/AKfycby1PfOZ8dPri99Uwa2smMd-Nk66l29RC0w6jNH3HMeqQoKNs_G_WITUM71ar5mEmTePjg/exec";
 // ===== User =====
 let balance = 0;
-
 // ===== UI =====
 
 const loading = document.getElementById("loading");
