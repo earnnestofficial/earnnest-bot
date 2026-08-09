@@ -187,7 +187,11 @@ document.getElementById("submitRegister").onclick = function(){
 
     const phone = document.getElementById("phone").value.trim();
     const payment = document.getElementById("payment").value.trim();
-    const referral = document.getElementById("referral").value.trim();
+    const rawReferral = document.getElementById("referral").value.trim();
+
+const referral = rawReferral
+  ? (rawReferral.startsWith("ER") ? rawReferral : "ER" + rawReferral)
+  : "";
 
     if(phone==""){
         showToast("Enter Phone Number");
