@@ -22,7 +22,7 @@ const user = DEV_MODE
       first_name: "Developer"
     }
   : Telegram.WebApp.initDataUnsafe.user;
-const refLink =
+const userRefLink =
 "https://t.me/earnnesstbot?startapp=ER" + user.id;
 
 console.log("Developer Mode:", DEV_MODE);
@@ -569,10 +569,6 @@ document.getElementById("earnBtn").onclick = function () {
     showToast("Earn");
 };
 
-document.getElementById("referralBtn").onclick = function () {
-    showToast("Referral");
-};
-
 document.getElementById("profileBtn").onclick = function () {
     showToast("Profile");
 };
@@ -620,31 +616,103 @@ window.onclick = function(event){
     
 };
 
-// =========================
-// OPEN REFERRAL
-// =========================
+// ==============================
+// REFERRAL SYSTEM
+// ==============================
 
 function openReferral(){
 
-    referralModal.style.display = "flex";
- const refLink =
-"https://t.me/earnnesstbot?startapp=ER" + user.id;
- document.getElementById("refLink").value = refLink;
+    const referralModal =
+        document.getElementById("referralModal");
 
+    const refLink =
+        document.getElementById("refLink");
+
+    if(!referralModal || !refLink){
+        showToast("Referral system error");
+        return;
+    }
+
+    // Create referral link
+    const referralLink =
+        "https://t.me/earnnesstbot?start=" + user.id;
+
+    // Show link
+    refLink.value = referralLink;
+
+    // Open modal
+    referralModal.style.display = "flex";
 }
-document.getElementById("closeReferral").onclick = function () {
-    referralModal.style.display = "none";
+
+
+// ==============================
+// CLOSE REFERRAL
+// ==============================
+
+document.getElementById("closeReferral").onclick = function(){
+
+    const referralModal =
+        document.getElementById("referralModal");
+
+    if(referralModal){
+        referralModal.style.display = "none";
+    }
+
 };
 
-document.getElementById("copyRefBtn").onclick = function () {
-    const refLink = document.getElementById("refLink");
 
-    refLink.select();
-    refLink.setSelectionRange(0, 99999);
+// ==============================
+// COPY REFERRAL LINK
+// ==============================
 
-    navigator.clipboard.writeText(refLink.value);
+document.getElementById("copyRefBtn").onclick = function(){
 
-    showToast("Referral Link Copied");
+    const refLink =
+        document.getElementById("refLink");
+
+    if(!refLink){
+        showToast("Referral link not found");
+        return;
+    }
+
+    const text = refLink.value;
+
+    if(navigator.clipboard){
+
+        navigator.clipboard.writeText(text)
+        .then(function(){
+
+            showToast("Referral Link Copied");
+
+        })
+        .catch(function(){
+
+            refLink.select();
+            document.execCommand("copy");
+
+            showToast("Referral Link Copied");
+
+        });
+
+    }else{
+
+        refLink.select();
+        document.execCommand("copy");
+
+        showToast("Referral Link Copied");
+    }
+
+};
+
+
+// ==============================
+// REFERRAL BUTTON
+// ==============================
+
+document.getElementById("referralBtn").onclick = function(){
+
+    openReferral();
+
 };
 
 // ======================
