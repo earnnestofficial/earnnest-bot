@@ -22,6 +22,8 @@ const user = DEV_MODE
       first_name: "Developer"
     }
   : Telegram.WebApp.initDataUnsafe.user;
+const refLink =
+"https://t.me/earnnesstbot?startapp=ER" + user.id;
 
 console.log("Developer Mode:", DEV_MODE);
 console.log("User:", user);
@@ -152,10 +154,23 @@ function getBalance(){
 
 }
 
+// ======================
+// GET REFERRAL FROM TELEGRAM START PARAM
+// ======================
+
+const startParam =
+    tg.initDataUnsafe?.start_param || "";
+
+if (startParam) {
+    const referralInput = document.getElementById("referral");
+
+    if (referralInput) {
+        referralInput.value = startParam;
+    }
+}
 // ==========================================
 // Start App
 // ==========================================
-
 login();
 
 // ======================
@@ -612,11 +627,9 @@ window.onclick = function(event){
 function openReferral(){
 
     referralModal.style.display = "flex";
-
-    const refLink =
-"https://t.me/earnnesstbot?start=" + tg.initDataUnsafe.user.id;
-
-    document.getElementById("refLink").value = refLink;
+ const refLink =
+"https://t.me/earnnesstbot?startapp=ER" + user.id;
+ document.getElementById("refLink").value = refLink;
 
 }
 document.getElementById("closeReferral").onclick = function () {
