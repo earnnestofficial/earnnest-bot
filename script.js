@@ -97,7 +97,7 @@ function login(){
         "action=login"+
         "&userId="+encodeURIComponent(user.id||"")+
         "&name="+encodeURIComponent(user.first_name||"")+
-        "&referral="
+        "&referral=" + encodeURIComponent(startParam)
     })
     .then(res=>res.text())
     .then(data=>{
@@ -158,9 +158,6 @@ function getBalance(){
 // ======================
 // GET REFERRAL FROM TELEGRAM START PARAM
 // ======================
-
-const startParam =
-    tg.initDataUnsafe?.start_param || "";
 
 if (startParam) {
     const referralInput = document.getElementById("referral");
