@@ -187,9 +187,7 @@ document.getElementById("submitRegister").onclick = function(){
     const payment = document.getElementById("payment").value.trim();
     const rawReferral = document.getElementById("referral").value.trim();
 
-const referral = startParam.startsWith("ER")
-  ? startParam
-  : "";
+const referral = startParam || "";
 
     if(phone==""){
         showToast("Enter Phone Number");
