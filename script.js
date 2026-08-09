@@ -24,6 +24,7 @@ const user = DEV_MODE
   : Telegram.WebApp.initDataUnsafe.user;
 const userRefLink =
 "https://t.me/earnnesstbot?startapp=ER" + user.id;
+const startParam = tg.initDataUnsafe.start_param || "";
 
 console.log("Developer Mode:", DEV_MODE);
 console.log("User:", user);
@@ -189,8 +190,8 @@ document.getElementById("submitRegister").onclick = function(){
     const payment = document.getElementById("payment").value.trim();
     const rawReferral = document.getElementById("referral").value.trim();
 
-const referral = rawReferral
-  ? (rawReferral.startsWith("ER") ? rawReferral : "ER" + rawReferral)
+const referral = startParam.startsWith("ER")
+  ? startParam
   : "";
 
     if(phone==""){
