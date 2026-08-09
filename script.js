@@ -639,7 +639,7 @@ function openReferral(){
 
     // Create referral link
     const referralLink =
-        "https://t.me/earnnesstbot?start=" + user.id;
+        "https://t.me/earnnesstbot?startapp=" + user.id;
 
     // Show link
     refLink.value = referralLink;
