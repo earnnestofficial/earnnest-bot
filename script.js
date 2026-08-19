@@ -719,3 +719,195 @@ document.getElementById("referralBtn").onclick = function(){
 // ======================
 
 console.log("Earnnest Bot V3.1 Final Loaded");
+// ==========================================
+// TASK SYSTEM
+// ==========================================
+
+const tasksContainer = document.querySelector(".tasks");
+
+function loadTasks() {
+
+    if (!tasksContainer) {
+        console.log("Tasks container not found");
+        return;
+    }
+
+    fetch(API_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body:
+        "action=getTasks" +
+        "&userId=" + encodeURIComponent(user.id || "")
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (!data.tasks) {
+            showToast("Tasks Load Failed");
+            return;
+        }
+
+        renderTasks(data.tasks);
+
+    })
+    .catch(() => {
+
+        showToast("Tasks Load Failed");
+
+    });
+}
+
+
+// ==========================================
+// RENDER TASKS
+// ==========================================
+
+function renderTasks(tasks) {
+
+    if (!tasksContainer) return;
+
+    tasksContainer.innerHTML = `
+        <h2>Tasks</h2>
+    `;
+
+    if (tasks.length === 0) {
+
+        tasksContainer.innerHTML += `
+            <div class="task">
+                <span>No Active Tasks</span>
+            </div>
+        `;
+
+        return;
+    }
+
+    tasks.forEach(task => {
+
+        const taskDiv = document.createElement("div");
+
+        taskDiv.className = "task";
+
+        taskDiv.innerHTML = `
+            <span>
+                ${task.taskName}
+                <br>
+                <small>+${task.reward} Coins</small>
+            </span>
+
+            <button
+                class="taskOpenBtn"
+                data-task-id="${task.taskId}"
+                data-link="${task.link}"
+                data-claimed="${task.claimed}">
+                ${task.claimed ? "Completed" : "Open"}
+            </button>
+        `;
+
+        tasksContainer.appendChild(taskDiv);
+
+    });
+
+    document.querySelectorAll(".taskOpenBtn").forEach(button => {
+
+        button.onclick = function () {
+
+            const taskId = this.dataset.taskId;
+            const link = this.dataset.link;
+            const claimed = this.dataset.claimed === "true";
+
+            if (claimed) {
+                showToast("Task Already Completed");
+                return;
+            }
+
+            if (link) {
+                window.open(link, "_blank");
+            }
+
+            setTimeout(function () {
+
+                claimTask(taskId);
+
+            }, 3000);
+
+        };
+
+    });
+
+}
+
+
+// ==========================================
+// CLAIM TASK
+// ==========================================
+
+function claimTask(taskId) {
+
+    fetch(API_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body:
+        "action=claimTask" +
+        "&userId=" + encodeURIComponent(user.id || "") +
+        "&taskId=" + encodeURIComponent(taskId)
+    })
+    .then(res => res.text())
+    .then(data => {
+
+        data = data.trim();
+
+        if (data === "ALREADY_CLAIMED") {
+
+            showToast("Task Already Completed");
+            loadTasks();
+            return;
+        }
+
+        if (data === "TASK_NOT_FOUND") {
+
+            showToast("Task Not Found");
+            return;
+        }
+
+        if (data === "USER_NOT_FOUND") {
+
+            showToast("User Not Found");
+            return;
+        }
+
+        const coins = Number(data);
+
+        if (!isNaN(coins)) {
+
+            balance = coins;
+            updateBalance();
+
+            showToast("+50 Coins Added");
+
+            loadTasks();
+
+        } else {
+
+            showToast("Task Reward Failed");
+
+        }
+
+    })
+    .catch(() => {
+
+        showToast("Server Error");
+
+    });
+
+}
+
+
+// ==========================================
+// LOAD TASKS
+// ==========================================
+
+loadTasks();
