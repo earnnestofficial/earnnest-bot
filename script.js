@@ -54,6 +54,31 @@ const depositAmount = document.getElementById("depositAmount");
 const depositTrxId = document.getElementById("depositTrxId");
 const depositNumber = document.getElementById("depositNumber");
 
+// ===== Deposit Payment Information =====
+let paymentAccounts = {
+    bKash: [],
+    Nagad: [],
+    Binance: [],
+    BinanceNetwork: ""
+};
+
+const paymentInfo = document.createElement("div");
+
+paymentInfo.id = "paymentInfo";
+
+paymentInfo.style.margin = "10px 0";
+paymentInfo.style.padding = "12px";
+paymentInfo.style.borderRadius = "10px";
+paymentInfo.style.background = "rgba(255,255,255,0.08)";
+paymentInfo.style.display = "none";
+
+if (depositNumber) {
+    depositNumber.parentNode.insertBefore(
+        paymentInfo,
+        depositNumber
+    );
+}
+
 // ===== Referral =====
 const referralModal = document.getElementById("referralModal");
 const refLink = document.getElementById("refLink");
@@ -345,6 +370,194 @@ document.getElementById("referralBtn").onclick = function () {
 // Deposit + Withdraw
 // ==========================================
 
+// ==========================================
+// LOAD PAYMENT ACCOUNTS
+// ==========================================
+
+function loadPaymentAccounts() {
+
+    fetch(API_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "action=getPaymentAccounts"
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (
+            !data ||
+            data.success !== true ||
+            !data.payments
+        ) {
+
+            showToast("Payment Information Load Failed");
+            return;
+        }
+
+        paymentAccounts = data.payments;
+
+        showPaymentInformation();
+
+    })
+    .catch(() => {
+
+        showToast("Payment Information Load Failed");
+
+    });
+}
+
+// ==========================================
+// SHOW PAYMENT INFORMATION
+// ==========================================
+
+function showPaymentInformation() {
+
+    if (!paymentInfo) return;
+
+    const method = depositMethod.value;
+
+    paymentInfo.innerHTML = "";
+    paymentInfo.style.display = "none";
+
+    if (method === "") {
+        return;
+    }
+
+    // ===== bKash =====
+
+    if (method === "bKash") {
+
+        const accounts = paymentAccounts.bKash || [];
+
+        if (accounts.length === 0) {
+
+            paymentInfo.innerHTML =
+                "<strong>bKash</strong><br>" +
+                "No active bKash account available.";
+
+            paymentInfo.style.display = "block";
+            return;
+        }
+
+        let html =
+            "<strong>Send payment to bKash:</strong><br>";
+
+        accounts.forEach(function(account, index) {
+
+            html +=
+                "<div style='margin-top:8px;'>" +
+                "<b>bKash Account " +
+                (index + 1) +
+                ":</b> " +
+                account +
+                "</div>";
+
+        });
+
+        paymentInfo.innerHTML = html;
+        paymentInfo.style.display = "block";
+
+        return;
+    }
+
+    // ===== Nagad =====
+
+    if (method === "Nagad") {
+
+        const accounts = paymentAccounts.Nagad || [];
+
+        if (accounts.length === 0) {
+
+            paymentInfo.innerHTML =
+                "<strong>Nagad</strong><br>" +
+                "No active Nagad account available.";
+
+            paymentInfo.style.display = "block";
+            return;
+        }
+
+        let html =
+            "<strong>Send payment to Nagad:</strong><br>";
+
+        accounts.forEach(function(account, index) {
+
+            html +=
+                "<div style='margin-top:8px;'>" +
+                "<b>Nagad Account " +
+                (index + 1) +
+                ":</b> " +
+                account +
+                "</div>";
+
+        });
+
+        paymentInfo.innerHTML = html;
+        paymentInfo.style.display = "block";
+
+        return;
+    }
+
+    // ===== Binance =====
+
+    if (method === "Binance") {
+
+        const addresses = paymentAccounts.Binance || [];
+        const network = paymentAccounts.BinanceNetwork || "";
+
+        if (addresses.length === 0) {
+
+            paymentInfo.innerHTML =
+                "<strong>Binance</strong><br>" +
+                "No active Binance address available.";
+
+            paymentInfo.style.display = "block";
+            return;
+        }
+
+        let html =
+            "<strong>Send USDT to Binance:</strong><br>";
+
+        if (network !== "") {
+
+            html +=
+                "<div style='margin-top:6px;'>" +
+                "<b>Network:</b> " +
+                network +
+                "</div>";
+
+        }
+
+        addresses.forEach(function(address, index) {
+
+            html +=
+                "<div style='margin-top:8px; word-break:break-all;'>" +
+                "<b>Address " +
+                (index + 1) +
+                ":</b><br>" +
+                address +
+                "</div>";
+
+        });
+
+        paymentInfo.innerHTML = html;
+        paymentInfo.style.display = "block";
+
+        return;
+    }
+}
+
+// ==========================================
+// DEPOSIT METHOD CHANGE
+// ==========================================
+
+depositMethod.addEventListener("change", function () {
+
+    showPaymentInformation();
+
+});
+
 // ======================
 // OPEN DEPOSIT
 // ======================
@@ -356,7 +569,12 @@ document.getElementById("depositBtn").onclick = function(){
     depositTrxId.value = "";
     depositNumber.value = "";
 
+    paymentInfo.innerHTML = "";
+    paymentInfo.style.display = "none";
+
     depositModal.style.display = "flex";
+
+    loadPaymentAccounts();
 
 };
 
