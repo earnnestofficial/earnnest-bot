@@ -22,8 +22,10 @@ const user = DEV_MODE
       first_name: "Developer"
     }
   : Telegram.WebApp.initDataUnsafe.user;
+
 const userRefLink =
 "https://t.me/earnnesstbot?startapp=ER" + user.id;
+
 const startParam = tg.initDataUnsafe.start_param || "";
 
 console.log("Developer Mode:", DEV_MODE);
@@ -31,6 +33,7 @@ console.log("User:", user);
 
 // ===== API =====
 const API_URL = "https://script.google.com/macros/s/AKfycby1PfOZ8dPri99Uwa2smMd-Nk66l29RC0w6jNH3HMeqQoKNs_G_WITUM71ar5mEmTePjg/exec";
+
 // ===== User =====
 let balance = 0;
 
@@ -53,6 +56,10 @@ const depositMethod = document.getElementById("depositMethod");
 const depositAmount = document.getElementById("depositAmount");
 const depositTrxId = document.getElementById("depositTrxId");
 const depositNumber = document.getElementById("depositNumber");
+
+// ===== Deposit Receive Account =====
+const depositReceiveAccount =
+    document.getElementById("depositReceiveAccount");
 
 // ===== Deposit Payment Information =====
 let paymentAccounts = {
@@ -127,22 +134,22 @@ function login(){
     .then(data=>{
 
         if (data == "REGISTER") {
-    registerUser();
-    return;
-}
+            registerUser();
+            return;
+        }
 
-const coins = Number(data);
+        const coins = Number(data);
 
-if (!isNaN(coins)) {
-    balance = coins;
-    updateBalance();
-}
+        if (!isNaN(coins)) {
+            balance = coins;
+            updateBalance();
+        }
 
-getBalance();
-})
-.catch(() => {
-    showToast("Server Error");
-});
+        getBalance();
+    })
+    .catch(() => {
+        showToast("Server Error");
+    });
 }
 
 // ==========================================
@@ -190,9 +197,11 @@ if (startParam) {
         referralInput.value = startParam;
     }
 }
+
 // ==========================================
 // Start App
 // ==========================================
+
 login();
 
 // ======================
@@ -211,7 +220,7 @@ document.getElementById("submitRegister").onclick = function(){
     const payment = document.getElementById("payment").value.trim();
     const rawReferral = document.getElementById("referral").value.trim();
 
-const referral = startParam || "";
+    const referral = startParam || "";
 
     if(phone==""){
         showToast("Enter Phone Number");
@@ -421,17 +430,28 @@ function showPaymentInformation() {
     paymentInfo.innerHTML = "";
     paymentInfo.style.display = "none";
 
+    // Reset Receive Account
+    if (depositReceiveAccount) {
+        depositReceiveAccount.innerHTML = "Select Method";
+    }
+
     if (method === "") {
         return;
     }
 
-    // ===== bKash =====
+    // ======================================
+    // bKash
+    // ======================================
 
-    if (method === "bKash") {
+    if (method === "Bkash") {
 
         const accounts = paymentAccounts.bKash || [];
 
         if (accounts.length === 0) {
+
+            if (depositReceiveAccount) {
+                depositReceiveAccount.innerHTML = "Not Available";
+            }
 
             paymentInfo.innerHTML =
                 "<strong>bKash</strong><br>" +
@@ -439,6 +459,11 @@ function showPaymentInformation() {
 
             paymentInfo.style.display = "block";
             return;
+        }
+
+        // Show first active bKash account
+        if (depositReceiveAccount) {
+            depositReceiveAccount.innerHTML = accounts[0];
         }
 
         let html =
@@ -462,7 +487,9 @@ function showPaymentInformation() {
         return;
     }
 
-    // ===== Nagad =====
+    // ======================================
+    // Nagad
+    // ======================================
 
     if (method === "Nagad") {
 
@@ -470,12 +497,21 @@ function showPaymentInformation() {
 
         if (accounts.length === 0) {
 
+            if (depositReceiveAccount) {
+                depositReceiveAccount.innerHTML = "Not Available";
+            }
+
             paymentInfo.innerHTML =
                 "<strong>Nagad</strong><br>" +
                 "No active Nagad account available.";
 
             paymentInfo.style.display = "block";
             return;
+        }
+
+        // Show first active Nagad account
+        if (depositReceiveAccount) {
+            depositReceiveAccount.innerHTML = accounts[0];
         }
 
         let html =
@@ -499,7 +535,9 @@ function showPaymentInformation() {
         return;
     }
 
-    // ===== Binance =====
+    // ======================================
+    // Binance
+    // ======================================
 
     if (method === "Binance") {
 
@@ -508,12 +546,21 @@ function showPaymentInformation() {
 
         if (addresses.length === 0) {
 
+            if (depositReceiveAccount) {
+                depositReceiveAccount.innerHTML = "Not Available";
+            }
+
             paymentInfo.innerHTML =
                 "<strong>Binance</strong><br>" +
                 "No active Binance address available.";
 
             paymentInfo.style.display = "block";
             return;
+        }
+
+        // Show first active Binance address
+        if (depositReceiveAccount) {
+            depositReceiveAccount.innerHTML = addresses[0];
         }
 
         let html =
@@ -572,6 +619,10 @@ document.getElementById("depositBtn").onclick = function(){
     paymentInfo.innerHTML = "";
     paymentInfo.style.display = "none";
 
+    if (depositReceiveAccount) {
+        depositReceiveAccount.innerHTML = "Select Method";
+    }
+
     depositModal.style.display = "flex";
 
     loadPaymentAccounts();
@@ -592,11 +643,13 @@ document.getElementById("submitDeposit").onclick = function(){
 
     const method = depositMethod.value;
     const amount = Number(depositAmount.value);
+
     if (!Number.isFinite(amount) || amount <= 0) {
-    showToast("Enter a valid amount");
-    return;
-}
-const trxId = depositTrxId.value.trim();
+        showToast("Enter a valid amount");
+        return;
+    }
+
+    const trxId = depositTrxId.value.trim();
     const number = depositNumber.value.trim();
 
     if(method==""){
@@ -653,6 +706,10 @@ const trxId = depositTrxId.value.trim();
         depositAmount.value="";
         depositTrxId.value="";
         depositNumber.value="";
+
+        if (depositReceiveAccount) {
+            depositReceiveAccount.innerHTML = "Select Method";
+        }
 
     })
     .catch(()=>{
@@ -734,30 +791,30 @@ document.getElementById("submitWithdraw").onclick=function(){
     .then(data=>{
 
         if(data=="COMING_SOON"){
-    showToast("Withdraw Coming Soon");
-    return;
-}
+            showToast("Withdraw Coming Soon");
+            return;
+        }
 
-if(data=="PENDING_WITHDRAW"){
-    showToast("You Already Have a Pending Withdraw");
-    return;
-}
+        if(data=="PENDING_WITHDRAW"){
+            showToast("You Already Have a Pending Withdraw");
+            return;
+        }
 
-if(data=="INSUFFICIENT_BALANCE"){
-    showToast("Insufficient Balance");
-    return;
-}
+        if(data=="INSUFFICIENT_BALANCE"){
+            showToast("Insufficient Balance");
+            return;
+        }
 
-if(data=="MINIMUM_1000"){
-    showToast("Minimum 1000 Coins");
-    return;
-}
+        if(data=="MINIMUM_1000"){
+            showToast("Minimum 1000 Coins");
+            return;
+        }
 
         showToast("Request Submitted (Pending Approval)");
 
-withdrawModal.style.display = "none";
+        withdrawModal.style.display = "none";
 
-getBalance();
+        getBalance();
 
     })
     .catch(()=>{
@@ -826,11 +883,10 @@ window.onclick = function(event){
         withdrawModal.style.display = "none";
     }
 
-
-  if(event.target === registerModal){
+    if(event.target === registerModal){
         registerModal.style.display = "none";
     }
-    
+
 };
 
 // ==============================
@@ -861,7 +917,6 @@ function openReferral(){
     referralModal.style.display = "flex";
 }
 
-
 // ==============================
 // CLOSE REFERRAL
 // ==============================
@@ -876,7 +931,6 @@ document.getElementById("closeReferral").onclick = function(){
     }
 
 };
-
 
 // ==============================
 // COPY REFERRAL LINK
@@ -921,7 +975,6 @@ document.getElementById("copyRefBtn").onclick = function(){
 
 };
 
-
 // ==============================
 // REFERRAL BUTTON
 // ==============================
@@ -937,6 +990,7 @@ document.getElementById("referralBtn").onclick = function(){
 // ======================
 
 console.log("Earnnest Bot V3.1 Final Loaded");
+
 // ==========================================
 // TASK SYSTEM
 // ==========================================
@@ -976,7 +1030,6 @@ function loadTasks() {
 
     });
 }
-
 
 // ==========================================
 // RENDER TASKS
@@ -1056,7 +1109,6 @@ function renderTasks(tasks) {
 
 }
 
-
 // ==========================================
 // CLAIM TASK
 // ==========================================
@@ -1122,7 +1174,6 @@ function claimTask(taskId) {
     });
 
 }
-
 
 // ==========================================
 // LOAD TASKS
